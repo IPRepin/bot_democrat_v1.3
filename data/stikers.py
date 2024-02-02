@@ -1,0 +1,2 @@
+sticker_start = "CAACAgIAAxkBAAEJzuZkv40aHbOzgNBjwi_ke5CQBXZWDAAC-C8AAmDeAUqxr1zhy180pC8E"
+sticker_help = "CAACAgIAAxkBAAEJzuhkv40vubaOZR-FWBTrN8R5LFzTAQACfC0AAv1A-EmtbasJ5vDg1S8E"
