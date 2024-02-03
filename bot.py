@@ -7,6 +7,7 @@ from aiogram.exceptions import TelegramNetworkError
 from dotenv import load_dotenv
 
 from hendlers.hendler_commands import router_commands
+from hendlers.main_users_handler import main_users_router
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +15,8 @@ logger = logging.getLogger(__name__)
 async def connect_telegram():
     bot = Bot(token=telegram_token, parse_mode="HTML")
     dp = Dispatcher()
-    dp.include_routers(router_commands)
+    dp.include_routers(router_commands,
+                       main_users_router)
     try:
         await bot.delete_webhook(drop_pending_updates=True)
         await dp.start_polling(bot)

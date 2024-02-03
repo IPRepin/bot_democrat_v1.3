@@ -3,6 +3,10 @@ from datetime import datetime
 from aiogram import types, Router, F
 
 from amo_integration.amo_commands import info
+from keyboards.inline import (not_entries_keyboard,
+                              online_entries_keyboard,
+                              review_clinic_keyboard,
+                              taxi_keyboard)
 
 main_users_router = Router()
 
@@ -16,7 +20,9 @@ async def stocks(message: types.Message) -> None:
     """
     new_date = datetime.now()
     now_date = new_date.strftime("%d.%m.%Y")
-    await message.answer(f"Список акций на {now_date}:\n", reply_markup=...)
+    await message.answer(f"Список акций на {now_date}:\n",
+                         reply_markup=...
+                         )
 
 
 @main_users_router.message(F.text == "✅Записаться на прием")
@@ -34,7 +40,7 @@ async def recording(message: types.Message) -> None:
         "- Чтобы воспользоваться формой \
         Онлайн записи нажмите кнопку\n"
         "'🌐Онлайн запись'",
-        reply_markup=...,
+        reply_markup=online_entries_keyboard,
     )
 
 
@@ -53,7 +59,7 @@ async def story_recording(message: types.Message) -> None:
             f"На данный момент у Вас нет запланированных \
             приемов в нашей Клинике.\n"
             "Для записи нажмите кнопку '🌐Онлайн запись'",
-            reply_markup=...,
+            reply_markup=not_entries_keyboard,
         )
 
 
@@ -65,16 +71,16 @@ async def taxi(message: types.Message) -> None:
     await message.answer(
         f"{message.from_user.first_name}\n"
         f"Мы находимся по адресу:\n"
-        f"*****"
+        f"*****\n"
         f"📍Нижний Новгород,\n"
         f"пр-кт Гагарина, д 118\n"
-        f"*****"
+        f"*****\n"
         f"Для вызова такси нажмите на кнопку ниже\n",
-        reply_markup=...
+        reply_markup=taxi_keyboard
     )
 
 
-@main_users_router.message(F.text == "🚕Как проехать?")
+@main_users_router.message(F.text == "🤩Оставить отзыв")
 async def review_clinic(message: types.Message) -> None:
     """
     Обработчик кнопки 🤩Оставить отзыв
@@ -83,5 +89,5 @@ async def review_clinic(message: types.Message) -> None:
 
     await message.answer(
         f"{message.from_user.first_name}\n" f"{text_discount}",
-        reply_markup=...,
+        reply_markup=review_clinic_keyboard,
     )
