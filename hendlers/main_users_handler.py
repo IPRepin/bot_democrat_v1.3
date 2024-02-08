@@ -7,6 +7,7 @@ from keyboards.inline import (not_entries_keyboard,
                               online_entries_keyboard,
                               review_clinic_keyboard,
                               taxi_keyboard)
+from keyboards.inline_kb_stocks import choosing_promotion_keyboards
 
 main_users_router = Router()
 
@@ -18,10 +19,11 @@ async def stocks(message: types.Message) -> None:
     """
     Обработчик кнопки Акции и скидки
     """
+    menu = await choosing_promotion_keyboards()
     new_date = datetime.now()
     now_date = new_date.strftime("%d.%m.%Y")
     await message.answer(f"Список акций на {now_date}:\n",
-                         reply_markup=...
+                         reply_markup=menu
                          )
 
 

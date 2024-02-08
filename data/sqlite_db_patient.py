@@ -1,7 +1,7 @@
 from data.sqlite_connect import DatabaseConnect
 
 
-class DatabaseStocksSqlitePatient(DatabaseConnect):
+class DatabasePatient(DatabaseConnect):
 
     def create_table_patient(self):
         sql = """

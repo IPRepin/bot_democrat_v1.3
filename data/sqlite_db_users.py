@@ -1,9 +1,9 @@
 from data.sqlite_connect import DatabaseConnect
 
 
-class DatabaseStocksSqliteUsers(DatabaseConnect):
+class DatabaseUsers(DatabaseConnect):
 
-    def create_table(self):
+    def create_table_users(self):
         sql = """
         CREATE TABLE IF NOT EXISTS Users (
           user_name VARCHAR(255) NOT NULL,

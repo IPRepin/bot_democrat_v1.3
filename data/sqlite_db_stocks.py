@@ -2,14 +2,13 @@ from data.sqlite_connect import DatabaseConnect
 
 
 class DatabaseStocks(DatabaseConnect):
-    def create_table(self):
+    def create_table_stocks(self):
         sql = """
         CREATE TABLE IF NOT EXISTS Stocks (
           id INTEGER NOT NULL,
           name VARCHAR(255) NOT NULL,
           description VARCHAR(255),
           price VARCHAR(255),
-          category VARCHAR(255) NOT NULL,
           PRIMARY KEY (id)
         );"""
         self.execute(sql, commit=True)
@@ -17,8 +16,8 @@ class DatabaseStocks(DatabaseConnect):
     def add_stock(self, id: int, name: str, category: str,
                   description: str = None, price: str = None,
                   ):
-        sql = "INSERT INTO Stocks (id, name, category, description, price) VALUES (?, ?, ?, ?, ?)"
-        parameters = (id, name, category, description, price)
+        sql = "INSERT INTO Stocks (id, name, description, price) VALUES (?, ?, ?, ?)"
+        parameters = (id, name, description, price)
         self.execute(sql, parameters, commit=True)
 
     def select_all_stocks(self):

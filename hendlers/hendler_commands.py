@@ -1,12 +1,13 @@
 import logging
 import sqlite3
 
-from aiogram import types, Router
+from aiogram import types, Router, Bot
 from aiogram.filters import CommandStart
 
-from data.sqlite_db_users import DatabaseStocksSqliteUsers
+from data.sqlite_db_users import DatabaseUsers
 from data.stikers import sticker_start
 from keyboards.replay import main_markup
+from utils.commands import register_commands
 
 router_commands = Router()
 
@@ -18,8 +19,9 @@ logging.basicConfig(
 
 @router_commands.message(CommandStart())
 async def get_start(message: types.Message) -> None:
+
     try:
-        DatabaseStocksSqliteUsers().add_user(
+        DatabaseUsers().add_user(
             user_id=message.from_user.id,
             user_name=message.from_user.first_name,
             user_url=message.from_user.url
@@ -62,4 +64,6 @@ async def get_start(message: types.Message) -> None:
                              f"<i>- Оставить отзыв о клинике</i>",
                              reply_markup=main_markup
                              )
+
+
 
