@@ -14,4 +14,4 @@ main_markup = ReplyKeyboardMarkup(keyboard=[
     [
         KeyboardButton(text='🚕Как проехать?')
     ]
-], resize_keyboard=True, input_field_placeholder="Нажмите одну из кнопок ниже ⬇️")
+], resize_keyboard=True, input_field_placeholder="Нажмите одну из кнопок ниже ⬇️", one_time_keyboard=True)

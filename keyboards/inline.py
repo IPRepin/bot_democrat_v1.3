@@ -36,7 +36,17 @@ review_clinic_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
-                text="💬Оставить отзыв", web_app=WebAppInfo(url="https://clck.ru/353Joo")
+                text="💬Оставить отзыв на Яндекс Картах", web_app=WebAppInfo(url="https://clck.ru/367gnm")
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="💬Оставить отзыв на Продокторов", web_app=WebAppInfo(url="https://clck.ru/38dSPV")
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="💬Оставить отзыв на 2ГИС", web_app=WebAppInfo(url="https://clck.ru/38dSTy")
             )
         ],
         [InlineKeyboardButton(text="↩️На главное меню", callback_data="cancel")],

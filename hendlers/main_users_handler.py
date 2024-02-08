@@ -8,6 +8,7 @@ from keyboards.inline import (not_entries_keyboard,
                               review_clinic_keyboard,
                               taxi_keyboard)
 from keyboards.inline_kb_stocks import choosing_promotion_keyboards
+from keyboards.replay import main_markup
 
 main_users_router = Router()
 
@@ -93,3 +94,9 @@ async def review_clinic(message: types.Message) -> None:
         f"{message.from_user.first_name}\n" f"{text_discount}",
         reply_markup=review_clinic_keyboard,
     )
+
+
+@main_users_router.callback_query(F.data == "cancel")
+async def cancel_callback_query(call: types.CallbackQuery) -> None:
+    await call.answer(cache_time=60)
+    await call.message.answer("Главное меню: ", reply_markup=main_markup)
