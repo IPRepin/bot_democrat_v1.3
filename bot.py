@@ -11,6 +11,7 @@ from data.sqlite_db_stocks import DatabaseStocks
 from data.sqlite_db_users import DatabaseUsers
 from hendlers.hendler_commands import router_commands
 from hendlers.main_users_handler import main_users_router
+from hendlers.states_recording_handler import recorder_router
 from hendlers.stocks_hendler import router_stocks
 from utils.commands import register_commands
 
@@ -35,7 +36,8 @@ async def connect_telegram():
     dp = Dispatcher()
     dp.include_routers(router_commands,
                        main_users_router,
-                       router_stocks)
+                       router_stocks,
+                       recorder_router)
     create_tables()
     try:
         await bot.delete_webhook(drop_pending_updates=True)

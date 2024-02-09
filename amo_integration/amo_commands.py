@@ -8,12 +8,11 @@ from asgiref.sync import sync_to_async
 
 from amo_integration.connect_api_amo import connect_amo
 
-"""
-Класс определения полей с данными АМО
-"""
-
 
 class Lead(_Lead):
+    """
+    Класс определения полей с данными АМО
+    """
     source_phone = custom_field.TextCustomField("Source_phone")
     rec_date = custom_field.TextCustomField("Дата записи")
     rec_time = custom_field.TextCustomField("Время записи")
@@ -21,12 +20,14 @@ class Lead(_Lead):
 
 
 @sync_to_async()
-def add_contact(name: str, phone: str):
+def add_contact(name: str, phone: str) -> None:
     """
     Функция добавления записи пользователя в АМО
     """
     name = f"{name} {phone}"
+    print(name, phone)
     connect_amo()
+    print("conn")
     create_contact = Lead.objects.create(name=name)
     create_contact.source_phone = phone
     create_contact.tags.append("Телеграм бот")
