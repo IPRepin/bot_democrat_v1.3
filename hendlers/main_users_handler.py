@@ -55,7 +55,7 @@ async def story_recording(message: types.Message) -> None:
     phone = ...
     if phone:
         msg = info(phone)
-        await message.answer(msg, reply_markup=...)
+        await message.answer(msg, reply_markup=online_entries_keyboard)
     else:
         await message.answer(
             f"{message.from_user.first_name}\n"
