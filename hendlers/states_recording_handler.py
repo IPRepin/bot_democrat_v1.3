@@ -15,6 +15,7 @@ from utils.states_online_recording import OnlineRecording
 from data.sqlite_db_patient import DatabasePatient
 
 recorder_router = Router()
+db = DatabasePatient()
 
 
 @recorder_router.callback_query(F.data == "rec_online")
@@ -26,7 +27,7 @@ async def enter_name(call: types.CallbackQuery, state: FSMContext) -> None:
     waiting_text = (
         "Время ожидания ввода истекло,\n"
         "повторите попытку нажав кнопку\n"
-        "✅Записаться на прием"
+        "'✅Записаться на прием'"
     )
     await call.message.answer("Введите имя:")
     await state.set_state(OnlineRecording.NAME)
@@ -45,7 +46,7 @@ async def enter_phone(message: types.Message, state: FSMContext) -> None:
     waiting_text = (
         "Время ожидания ввода истекло,\n"
         "повторите попытку нажав кнопку\n"
-        "✅Записаться на прием"
+        "'✅Записаться на прием'"
     )
     await state.update_data(answer_name=message.text)
     await message.answer("Введите номер телефона:")
@@ -70,6 +71,6 @@ async def end_enter(message: types.Message, state: FSMContext) -> None:
         f"Администратор свяжется с вами в течении 10 минут.",
         reply_markup=main_markup,
     )
-    # await DatabasePatient.add_patient(user_id=message.from_user.id, user_name=name, phone=phone)
+    await db.add_patient(user_id=message.from_user.id, user_name=name, phone=phone)
     await add_contact(name, phone)
     await state.clear()  # Очищаем состояние
