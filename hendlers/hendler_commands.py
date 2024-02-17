@@ -18,17 +18,17 @@ logging.basicConfig(
 
 @router_commands.message(CommandStart())
 async def get_start(message: types.Message) -> None:
-
+    sticker_id = sticker_start
     try:
         DatabaseUsers().add_user(
             user_id=message.from_user.id,
             user_name=message.from_user.first_name,
             user_url=message.from_user.url
         )
-        sticker_id = sticker_start
+
         await message.answer_sticker(sticker=sticker_id)
         await message.answer(f"Привет {message.from_user.first_name}\n"
-                             f"Я бот стоматологической клиники DEMOCRAT (version 1.3)\n"
+                             f"Я бот стоматологической клиники DEMOKRAT (version 1.3)\n"
                              f"Я помогу вам:\n"
                              f"<i>- Записаться на консультацию или на прием к врачу</i>\n"
                              f"<i>- Узнать о ваших текущих записях в нашу клинику</i>\n"
@@ -38,10 +38,9 @@ async def get_start(message: types.Message) -> None:
                              )
     except (sqlite3.IntegrityError, sqlite3.OperationalError) as err:
         logger.error(err)
-        sticker_id = sticker_start
         await message.answer_sticker(sticker=sticker_id)
         await message.answer(f"С возвращением {message.from_user.first_name}\n"
-                             f"Я бот стоматологической клиники DEMOCRAT (version 1.3)\n"
+                             f"Я бот стоматологической клиники DEMOKRAT (version 1.3)\n"
                              f"Я помогу вам:\n"
                              f"<i>- Записаться на консультацию или на прием к врачу</i>\n"
                              f"<i>- Узнать о ваших текущих записях в нашу клинику</i>\n"
