@@ -1,6 +1,8 @@
 import asyncio
 import logging
 import os
+from datetime import datetime
+from logging.handlers import RotatingFileHandler
 
 from aiogram import Bot, Dispatcher
 from aiogram.exceptions import TelegramNetworkError
@@ -51,10 +53,15 @@ async def connect_telegram():
 
 if __name__ == '__main__':
     load_dotenv()
-    logging.basicConfig(
-        filename='logs/bot.log',
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logs_pash = os.getenv('LOGS_PASH')
+    dt_now = datetime.now()
+    dt_now = dt_now.strftime("%Y-%m-%d")
+    log_handler = RotatingFileHandler(f'{logs_pash}/{dt_now}bot.log', maxBytes=1e6, backupCount=5)
+    log_handler.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    log_handler.setFormatter(formatter)
+    logger.addHandler(log_handler)
+
     telegram_token = os.getenv('TELEGRAM_TOKEN')
     try:
         asyncio.run(connect_telegram())
