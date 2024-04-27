@@ -7,7 +7,7 @@ not_entries_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
-                text="📲Связаться через телеграм",
+                text="📲Записаться через телеграм",
                 url="https://t.me/+79302077377",
             )
         ],
