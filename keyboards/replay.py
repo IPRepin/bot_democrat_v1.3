@@ -4,10 +4,10 @@ main_markup = ReplyKeyboardMarkup(keyboard=[
     [
         KeyboardButton(text='💫Акции и скидки'),
     ],
-    [
-        KeyboardButton(text='✅Записаться на прием'),
-        KeyboardButton(text='📑Ваши записи'),
-    ],
+    # [
+    #     KeyboardButton(text='✅Записаться на прием'),
+    #     KeyboardButton(text='📑Ваши записи'),
+    # ],
     [
         KeyboardButton(text='🤩Оставить отзыв')
     ],
