@@ -16,6 +16,7 @@ def connect_amo():
         redirect_url=os.getenv('AMO_REDIRECT_URL'),
         storage=tokens.FileTokensStorage(),  # by default FileTokensStorage
     )
-
+    #
     # tokens.default_token_manager.init(code=os.getenv('AMO_TOKEN_MANAGER'),
     #                                   skip_error=False)
+

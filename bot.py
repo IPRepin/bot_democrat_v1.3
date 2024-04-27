@@ -52,6 +52,7 @@ async def connect_telegram():
 if __name__ == '__main__':
     load_dotenv()
     logging.basicConfig(
+        filename='logs/bot.log',
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     telegram_token = os.getenv('TELEGRAM_TOKEN')

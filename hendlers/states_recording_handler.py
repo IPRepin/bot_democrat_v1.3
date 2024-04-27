@@ -51,10 +51,10 @@ async def enter_phone(message: types.Message, state: FSMContext) -> None:
     await state.update_data(answer_name=message.text)
     await message.answer("Введите номер телефона:")
     await state.set_state(OnlineRecording.PHONE)
-    await asyncio.sleep(40)
-    if await state.get_state() == "OnlineRecording:PHONE":
-        await message.answer(waiting_text, reply_markup=main_markup)
-        await state.clear()
+    # await asyncio.sleep(40)
+    # if await state.get_state() == "OnlineRecording:PHONE":
+    #     await message.answer(waiting_text, reply_markup=main_markup)
+    #     await state.clear()
 
 
 @recorder_router.message(OnlineRecording.PHONE)
@@ -64,13 +64,15 @@ async def end_enter(message: types.Message, state: FSMContext) -> None:
     пользователя в АМО
     """
     data = await state.get_data()
+    await state.clear()
     name = data.get("answer_name")
     phone = message.text
+    await add_contact(name, phone)
     await message.answer(
         f"Спасибо {name} ваш номер {phone}\n"
         f"Администратор свяжется с вами в течении 10 минут.",
         reply_markup=main_markup,
     )
-    await db.add_patient(user_id=message.from_user.id, user_name=name, phone=phone)
-    await add_contact(name, phone)
-    await state.clear()  # Очищаем состояние
+    db.add_patient(user_id=message.from_user.id, user_name=name, phone=phone)
+
+
