@@ -1,6 +1,8 @@
 import logging
 import sqlite3
 
+from utils.logger_settings import get_logger
+
 logger = logging.getLogger(__name__)
 
 
@@ -8,31 +10,26 @@ class DatabaseConnect:
     def __init__(self, path_to_db="data/stocks.db"):
         self.path_to_db = path_to_db
 
-    @property
-    def connect(self):
-        return sqlite3.connect(self.path_to_db)
-
     def execute(self,
-                sql: str,
-                parameters: tuple = None,
+                sql,
+                parameters=None,
                 fetchall=False,
                 fetchone=False,
                 commit=False):
         if not parameters:
             parameters = tuple()
-        connection = self.connect
-        connection.set_trace_callback(logger_bd)
-        cursor = connection.cursor()
-        data = None
-        cursor.execute(sql, parameters)
-        if commit:
-            connection.commit()
-        if fetchone:
-            data = cursor.fetchone()
-        if fetchall:
-            data = cursor.fetchall()
-        connection.close()
-        return data
+        with sqlite3.connect(self.path_to_db) as connection:
+            connection.set_trace_callback(logger_bd)
+            cursor = connection.cursor()
+            cursor.execute(sql, parameters)
+            if commit:
+                connection.commit()
+            data = None
+            if fetchall:
+                data = cursor.fetchall()
+            elif fetchone:
+                data = cursor.fetchone()
+            return data
 
 
 def logger_bd(stattement):

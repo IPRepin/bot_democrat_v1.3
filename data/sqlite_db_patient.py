@@ -37,3 +37,8 @@ class DatabasePatient(DatabaseConnect):
 
     def delete_patient(self):
         self.execute("DELETE FROM Patient WHERE TRUE")
+
+    def patient_update(self, user_id, user_name, phone):
+        sql = "UPDATE Patient SET user_name = ?, phone = ? WHERE user_id = ?"
+        parameters = (user_name, phone, user_id)
+        self.execute(sql, parameters, commit=True)

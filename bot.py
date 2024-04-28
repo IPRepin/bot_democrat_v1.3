@@ -1,8 +1,6 @@
 import asyncio
 import logging
 import os
-from datetime import datetime
-from logging.handlers import RotatingFileHandler
 
 from aiogram import Bot, Dispatcher
 from aiogram.exceptions import TelegramNetworkError
@@ -16,11 +14,7 @@ from hendlers.main_users_handler import main_users_router
 from hendlers.states_recording_handler import recorder_router
 from hendlers.stocks_hendler import router_stocks
 from utils.commands import register_commands
-
-logger = logging.getLogger(__name__)
-db_stocks = DatabaseStocks()
-db_users = DatabaseUsers()
-db_patient = DatabasePatient()
+from utils.logger_settings import get_logger
 
 
 def create_tables():
@@ -30,7 +24,7 @@ def create_tables():
         db_patient.create_table_patient()
         logger.info("Tables created")
     except Exception as e:
-        logger.error(e)
+        logger.exception(e)
 
 
 async def connect_telegram():
@@ -53,15 +47,11 @@ async def connect_telegram():
 
 if __name__ == '__main__':
     load_dotenv()
-    logs_pash = os.getenv('LOGS_PASH')
-    dt_now = datetime.now()
-    dt_now = dt_now.strftime("%Y-%m-%d")
-    log_handler = RotatingFileHandler(f'{logs_pash}/{dt_now}bot.log', maxBytes=1e6, backupCount=5)
-    log_handler.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    log_handler.setFormatter(formatter)
-    logger.addHandler(log_handler)
-
+    logger = logging.getLogger(__name__)
+    get_logger()
+    db_stocks = DatabaseStocks()
+    db_users = DatabaseUsers()
+    db_patient = DatabasePatient()
     telegram_token = os.getenv('TELEGRAM_TOKEN')
     try:
         asyncio.run(connect_telegram())

@@ -1,16 +1,22 @@
+import logging
 from datetime import datetime
 
 from aiogram import types, Router, F
 
 from amo_integration.amo_commands import info
+from data.sqlite_db_patient import DatabasePatient
 from keyboards.inline import (not_entries_keyboard,
                               online_entries_keyboard,
                               review_clinic_keyboard,
                               taxi_keyboard)
 from keyboards.inline_kb_stocks import choosing_promotion_keyboards
 from keyboards.replay import main_markup
+from utils.logger_settings import get_logger
 
 main_users_router = Router()
+db_patient = DatabasePatient()
+logger = logging.getLogger(__name__)
+get_logger()
 
 """Функции обработки кнопок основного меню"""
 
@@ -46,7 +52,9 @@ async def story_recording(message: types.Message) -> None:
     """
     Обработчик кнопки Мои записи
     """
-    phone = ...
+    patient = db_patient.select_patient(user_id=message.from_user.id)
+    phone = patient[2]
+    logger.info(phone)
     if phone:
         msg = info(phone)
         await message.answer(msg, reply_markup=online_entries_keyboard)
