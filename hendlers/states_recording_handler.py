@@ -17,6 +17,7 @@ from data.sqlite_db_patient import DatabasePatient
 
 recorder_router = Router()
 db = DatabasePatient()
+logger = logging.getLogger(__name__)
 
 
 @recorder_router.callback_query(F.data == "rec_online")
@@ -65,10 +66,12 @@ async def end_enter(message: types.Message, state: FSMContext) -> None:
     пользователя в АМО
     """
     data = await state.get_data()
+    logger.info("save data: %s", data)
     await state.clear()
     name = data.get("answer_name")
     phone = message.text
     await add_contact(name, phone)
+    logger.info("add contact")
     await message.answer(
         f"Спасибо {name} ваш номер {phone}\n"
         f"Администратор свяжется с вами в течении 10 минут.",
@@ -78,12 +81,14 @@ async def end_enter(message: types.Message, state: FSMContext) -> None:
         db.add_patient(user_id=message.from_user.id,
                        user_name=name,
                        phone=phone)
+        logger.info(f"add patient {message.from_user.id}")
     except sqlite3.IntegrityError as err:
-        logging.error(err)
+        logger.error(err)
         db.patient_update(user_id=message.from_user.id,
                           user_name=name,
                           phone=phone)
+        logger.info(f"update patient {message.from_user.id}")
     except sqlite3.OperationalError as err:
-        logging.error(err)
+        logger.error(err)
 
 

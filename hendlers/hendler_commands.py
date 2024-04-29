@@ -11,10 +11,6 @@ from keyboards.replay import main_markup
 router_commands = Router()
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
 
 @router_commands.message(CommandStart())
 async def get_start(message: types.Message) -> None:
@@ -25,7 +21,7 @@ async def get_start(message: types.Message) -> None:
             user_name=message.from_user.first_name,
             user_url=message.from_user.url
         )
-
+        logger.info(f"User {message.from_user.first_name} added to database")
         await message.answer_sticker(sticker=sticker_id)
         await message.answer(f"Привет {message.from_user.first_name}\n"
                              f"Я бот стоматологической клиники DEMOKRAT (version 1.3)\n"

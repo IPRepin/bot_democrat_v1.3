@@ -1,9 +1,8 @@
 import logging
 import sqlite3
 
-from utils.logger_settings import get_logger
+from utils.logger_settings import setup_logging
 
-logger = logging.getLogger(__name__)
 
 
 class DatabaseConnect:
@@ -33,9 +32,6 @@ class DatabaseConnect:
 
 
 def logger_bd(stattement):
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logging.info(f"""
     ________________________________________
     Executing:
