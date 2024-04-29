@@ -23,7 +23,7 @@ not_entries_keyboard = InlineKeyboardMarkup(
 
 online_entries_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
-        [InlineKeyboardButton(text="🌐Онлайн запись", callback_data="rec_online")],
+        # [InlineKeyboardButton(text="🌐Онлайн запись", callback_data="rec_online")],
         [
             InlineKeyboardButton(
                 text="📲Связаться через телеграм",

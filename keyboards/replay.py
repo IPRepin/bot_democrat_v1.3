@@ -6,7 +6,7 @@ main_markup = ReplyKeyboardMarkup(keyboard=[
     ],
     [
         KeyboardButton(text='✅Записаться на прием'),
-        KeyboardButton(text='📑Ваши записи'),
+        # KeyboardButton(text='📑Ваши записи'),
     ],
     [
         KeyboardButton(text='🤩Оставить отзыв')
