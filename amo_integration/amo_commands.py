@@ -1,6 +1,7 @@
 """
 Модуль команд работы с AMO CRM
 """
+import logging
 from datetime import datetime
 
 from amocrm.v2 import Lead as _Lead, custom_field
@@ -8,6 +9,7 @@ from asgiref.sync import sync_to_async
 
 from amo_integration.connect_api_amo import connect_amo
 
+logger = logging.getLogger(__name__)
 
 class Lead(_Lead):
     """
@@ -32,6 +34,7 @@ def add_contact(name: str, phone: str) -> None:
     create_contact.source_phone = phone
     create_contact.tags.append("Телеграм бот")
     create_contact.save()
+    logger.info(f"{name} добавлен в АМО")
 
 
 def info(phone):
@@ -45,7 +48,8 @@ def info(phone):
         time_ = lead.rec_time
         doctor = lead.doctor
         return f"Вы записаны {date} на {time_} к доктору {doctor}"
-    except Exception:
+    except Exception as error:
+        print(f"--->{error}")
         text_story_recording = f"На данный момент у Вас нет запланированных " \
                                f"приемов в нашей Клинике.\n" \
                                f"Для записи нажмите кнопку '🌐Онлайн запись'"

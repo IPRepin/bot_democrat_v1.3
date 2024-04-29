@@ -5,6 +5,7 @@
 
 import asyncio
 import logging
+import sqlite3
 
 from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
@@ -16,6 +17,7 @@ from data.sqlite_db_patient import DatabasePatient
 
 recorder_router = Router()
 db = DatabasePatient()
+logger = logging.getLogger(__name__)
 
 
 @recorder_router.callback_query(F.data == "rec_online")
@@ -64,15 +66,29 @@ async def end_enter(message: types.Message, state: FSMContext) -> None:
     пользователя в АМО
     """
     data = await state.get_data()
+    logger.info("save data: %s", data)
     await state.clear()
     name = data.get("answer_name")
     phone = message.text
     await add_contact(name, phone)
+    logger.info("add contact")
     await message.answer(
         f"Спасибо {name} ваш номер {phone}\n"
         f"Администратор свяжется с вами в течении 10 минут.",
         reply_markup=main_markup,
     )
-    db.add_patient(user_id=message.from_user.id, user_name=name, phone=phone)
+    try:
+        db.add_patient(user_id=message.from_user.id,
+                       user_name=name,
+                       phone=phone)
+        logger.info(f"add patient {message.from_user.id}")
+    except sqlite3.IntegrityError as err:
+        logger.error(err)
+        db.patient_update(user_id=message.from_user.id,
+                          user_name=name,
+                          phone=phone)
+        logger.info(f"update patient {message.from_user.id}")
+    except sqlite3.OperationalError as err:
+        logger.error(err)
 
 

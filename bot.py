@@ -1,11 +1,10 @@
 import asyncio
 import logging
 import os
-from datetime import datetime
-from logging.handlers import RotatingFileHandler
+import sqlite3
 
 from aiogram import Bot, Dispatcher
-from aiogram.exceptions import TelegramNetworkError
+from aiogram.exceptions import TelegramNetworkError, TelegramRetryAfter
 from dotenv import load_dotenv
 
 from data.sqlite_db_patient import DatabasePatient
@@ -16,11 +15,7 @@ from hendlers.main_users_handler import main_users_router
 from hendlers.states_recording_handler import recorder_router
 from hendlers.stocks_hendler import router_stocks
 from utils.commands import register_commands
-
-logger = logging.getLogger(__name__)
-db_stocks = DatabaseStocks()
-db_users = DatabaseUsers()
-db_patient = DatabasePatient()
+from utils.logger_settings import setup_logging
 
 
 def create_tables():
@@ -29,8 +24,12 @@ def create_tables():
         db_users.create_table_users()
         db_patient.create_table_patient()
         logger.info("Tables created")
-    except Exception as e:
-        logger.error(e)
+    except sqlite3.IntegrityError as err:
+        logger.exception(err)
+    except sqlite3.OperationalError as err:
+        logger.exception(err)
+    except sqlite3.DatabaseError as err:
+        logger.exception(err)
 
 
 async def connect_telegram():
@@ -51,19 +50,22 @@ async def connect_telegram():
         await bot.close()
 
 
-if __name__ == '__main__':
-    load_dotenv()
-    logs_pash = os.getenv('LOGS_PASH')
-    dt_now = datetime.now()
-    dt_now = dt_now.strftime("%Y-%m-%d")
-    log_handler = RotatingFileHandler(f'{logs_pash}/{dt_now}bot.log', maxBytes=1e6, backupCount=5)
-    log_handler.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    log_handler.setFormatter(formatter)
-    logger.addHandler(log_handler)
-
-    telegram_token = os.getenv('TELEGRAM_TOKEN')
+def main():
     try:
         asyncio.run(connect_telegram())
     except KeyboardInterrupt:
         logger.info('Bot interrupted')
+        return
+    except TelegramRetryAfter as error:
+        logger.error(error)
+
+
+if __name__ == '__main__':
+    load_dotenv()
+    setup_logging()
+    logger = logging.getLogger(__name__)
+    db_stocks = DatabaseStocks()
+    db_users = DatabaseUsers()
+    db_patient = DatabasePatient()
+    telegram_token = os.getenv('TELEGRAM_TOKEN')
+    main()
