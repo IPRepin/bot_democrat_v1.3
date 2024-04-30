@@ -15,3 +15,11 @@ main_markup = ReplyKeyboardMarkup(keyboard=[
         KeyboardButton(text='🚕Как проехать?')
     ]
 ], resize_keyboard=True, input_field_placeholder="Нажмите одну из кнопок ниже ⬇️", one_time_keyboard=True)
+
+admin_markup = ReplyKeyboardMarkup(keyboard=[
+    [
+        KeyboardButton(text="Добавить акцию"),
+        KeyboardButton(text="Удалить все акции"),
+    ]
+], resize_keyboard=True, one_time_keyboard=True
+)

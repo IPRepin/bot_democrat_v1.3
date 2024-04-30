@@ -5,19 +5,19 @@ class DatabaseStocks(DatabaseConnect):
     def create_table_stocks(self):
         sql = """
         CREATE TABLE IF NOT EXISTS Stocks (
-          id INTEGER NOT NULL,
-          name VARCHAR(255) NOT NULL,
-          description VARCHAR(255),
-          price VARCHAR(255),
-          PRIMARY KEY (id)
-        );"""
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          description TEXT,
+          price TEXT
+        );
+        """
         self.execute(sql, commit=True)
 
-    def add_stock(self, id: int, name: str, category: str,
+    def add_stock(self, name: str,
                   description: str = None, price: str = None,
                   ):
-        sql = "INSERT INTO Stocks (id, name, description, price) VALUES (?, ?, ?, ?)"
-        parameters = (id, name, description, price)
+        sql = "INSERT INTO Stocks ( name, description, price) VALUES (?, ?, ?)"
+        parameters = (name, description, price)
         self.execute(sql, parameters, commit=True)
 
     def select_all_stocks(self):

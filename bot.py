@@ -5,11 +5,13 @@ import sqlite3
 
 from aiogram import Bot, Dispatcher
 from aiogram.exceptions import TelegramNetworkError, TelegramRetryAfter
+from aiogram.fsm.storage.redis import RedisStorage
 from dotenv import load_dotenv
 
 from data.sqlite_db_patient import DatabasePatient
 from data.sqlite_db_stocks import DatabaseStocks
 from data.sqlite_db_users import DatabaseUsers
+from hendlers.admin_hendlers import admin_router
 from hendlers.hendler_commands import router_commands
 from hendlers.main_users_handler import main_users_router
 from hendlers.states_recording_handler import recorder_router
@@ -33,11 +35,13 @@ def create_tables():
 
 
 async def connect_telegram():
+    storage = RedisStorage.from_url("redis://localhost:6379/0")
     bot = Bot(token=telegram_token, parse_mode="HTML")
-    dp = Dispatcher()
+    dp = Dispatcher(storage=storage)
     dp.include_routers(router_commands,
                        main_users_router,
                        router_stocks,
+                       admin_router,
                        recorder_router)
     create_tables()
     try:
