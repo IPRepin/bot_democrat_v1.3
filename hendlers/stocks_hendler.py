@@ -25,7 +25,7 @@ async def show_description(callback_query: types.CallbackQuery,
     stock = db.select_stock(id=stock_id)
     logger.info(f"stock: {stock}")
     try:
-        await callback_query.message.edit_text(stock[2], reply_markup=not_entries_keyboard)
+        await callback_query.message.answer_photo(photo=stock[4], caption=stock[2], reply_markup=not_entries_keyboard)
         await callback_query.answer()
     except TelegramBadRequest as e:
         logging.error(e)

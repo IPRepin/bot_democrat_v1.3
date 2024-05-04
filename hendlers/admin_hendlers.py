@@ -38,6 +38,14 @@ async def admin_add_stock_name(message: types.Message, state: FSMContext) -> Non
 @admin_router.message(StatesAddStocks.DESCRIPTION)
 async def admin_add_stock_description(message: types.Message, state: FSMContext) -> None:
     await state.update_data(stock_description=message.text)
+    await message.answer("Добавьте изображение к акции")
+    await state.set_state(StatesAddStocks.IMAGE)
+
+
+@admin_router.message(StatesAddStocks.IMAGE, F.photo)
+async def admin_add_stock_image(message: types.Message, state: FSMContext) -> None:
+    file_id = message.photo[-1].file_id
+    await state.update_data(stock_image=file_id)
     await message.answer("Добавьте цену акции")
     await state.set_state(StatesAddStocks.PRICE)
 
@@ -52,6 +60,7 @@ async def admin_add_stock_price(message: types.Message, state: FSMContext) -> No
             name=data.get("stock_name"),
             description=data.get("stock_description"),
             price=data.get("stock_price"),
+            image=data.get("stock_image"),
         )
         await message.answer("Акция добавлена, можно добавить еще акции", reply_markup=admin_markup)
     except sqlite3.IntegrityError as error:

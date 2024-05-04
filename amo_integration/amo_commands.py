@@ -11,6 +11,7 @@ from amo_integration.connect_api_amo import connect_amo
 
 logger = logging.getLogger(__name__)
 
+
 class Lead(_Lead):
     """
     Класс определения полей с данными АМО
@@ -27,9 +28,7 @@ def add_contact(name: str, phone: str) -> None:
     Функция добавления записи пользователя в АМО
     """
     name = f"{name} {phone}"
-    print(name, phone)
     connect_amo()
-    print("conn")
     create_contact = Lead.objects.create(name=name)
     create_contact.source_phone = phone
     create_contact.tags.append("Телеграм бот")
@@ -48,8 +47,8 @@ def info(phone):
         time_ = lead.rec_time
         doctor = lead.doctor
         return f"Вы записаны {date} на {time_} к доктору {doctor}"
-    except Exception as error:
-        print(f"--->{error}")
+    except StopIteration as error:
+        logger.error(error)
         text_story_recording = f"На данный момент у Вас нет запланированных " \
                                f"приемов в нашей Клинике.\n" \
                                f"Для записи нажмите кнопку '🌐Онлайн запись'"
