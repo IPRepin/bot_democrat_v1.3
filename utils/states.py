@@ -7,4 +7,5 @@ class StatesAddStocks(StatesGroup):
     """
     NAME = State()
     DESCRIPTION = State()
+    IMAGE = State()
     PRICE = State()

@@ -7,6 +7,7 @@ class DatabaseStocks(DatabaseConnect):
         CREATE TABLE IF NOT EXISTS Stocks (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT NOT NULL,
+          image TEXT,
           description TEXT,
           price TEXT
         );
@@ -14,10 +15,12 @@ class DatabaseStocks(DatabaseConnect):
         self.execute(sql, commit=True)
 
     def add_stock(self, name: str,
-                  description: str = None, price: str = None,
+                  description: str = None,
+                  price: str = None,
+                  image: str = None,
                   ):
-        sql = "INSERT INTO Stocks ( name, description, price) VALUES (?, ?, ?)"
-        parameters = (name, description, price)
+        sql = "INSERT INTO Stocks ( name, description, price, image) VALUES (?, ?, ?, ?)"
+        parameters = (name, description, price, image)
         self.execute(sql, parameters, commit=True)
 
     def select_all_stocks(self):
