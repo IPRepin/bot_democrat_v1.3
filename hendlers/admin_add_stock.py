@@ -7,42 +7,48 @@ from dotenv import load_dotenv
 
 from data.sqlite_db_stocks import DatabaseStocks
 from filters.admin_filter import AdminsFilter, admins_filter
-from keyboards.replay import admin_markup
+from keyboards.replay import admin_stocks_keyboard, admin_main_keyboard
 from utils.states import StatesAddStocks
 
 load_dotenv()
-admin_router = Router()
+admin_stocks_router = Router()
 db_stocks = DatabaseStocks()
+logger = logging.getLogger(__name__)
 
 
-@admin_router.message(F.text == "Удалить все акции",
-                      AdminsFilter(admins_filter()))
+@admin_stocks_router.message(F.text == "Удалить все акции",
+                             AdminsFilter(admins_filter()))
 async def admin_delete_stock(message: types.Message):
     db_stocks.delete_stocks()
-    await message.answer("Акции удалены", reply_markup=admin_markup)
+    await message.answer("Акции удалены", reply_markup=admin_stocks_keyboard)
 
 
-@admin_router.message(F.text == "Добавить акцию")
+@admin_stocks_router.message(F.text == "◀️назад")
+async def back_main_menu(message: types.Message):
+    await message.answer("Вы вернулись в главное меню", reply_markup=admin_main_keyboard)
+
+
+@admin_stocks_router.message(F.text == "Добавить акцию")
 async def admin_add_stock(message: types.Message, state: FSMContext) -> None:
     await state.set_state(StatesAddStocks.NAME)
     await message.answer("Добавьте название акции")
 
 
-@admin_router.message(StatesAddStocks.NAME)
+@admin_stocks_router.message(StatesAddStocks.NAME)
 async def admin_add_stock_name(message: types.Message, state: FSMContext) -> None:
     await state.update_data(stock_name=message.text)
     await message.answer("Добавьте описание акции")
     await state.set_state(StatesAddStocks.DESCRIPTION)
 
 
-@admin_router.message(StatesAddStocks.DESCRIPTION)
+@admin_stocks_router.message(StatesAddStocks.DESCRIPTION)
 async def admin_add_stock_description(message: types.Message, state: FSMContext) -> None:
     await state.update_data(stock_description=message.text)
     await message.answer("Добавьте изображение к акции")
     await state.set_state(StatesAddStocks.IMAGE)
 
 
-@admin_router.message(StatesAddStocks.IMAGE, F.photo)
+@admin_stocks_router.message(StatesAddStocks.IMAGE, F.photo)
 async def admin_add_stock_image(message: types.Message, state: FSMContext) -> None:
     file_id = message.photo[-1].file_id
     await state.update_data(stock_image=file_id)
@@ -50,7 +56,7 @@ async def admin_add_stock_image(message: types.Message, state: FSMContext) -> No
     await state.set_state(StatesAddStocks.PRICE)
 
 
-@admin_router.message(StatesAddStocks.PRICE)
+@admin_stocks_router.message(StatesAddStocks.PRICE)
 async def admin_add_stock_price(message: types.Message, state: FSMContext) -> None:
     await state.update_data(stock_price=message.text)
     data = await state.get_data()
@@ -62,6 +68,6 @@ async def admin_add_stock_price(message: types.Message, state: FSMContext) -> No
             price=data.get("stock_price"),
             image=data.get("stock_image"),
         )
-        await message.answer("Акция добавлена, можно добавить еще акции", reply_markup=admin_markup)
+        await message.answer("Акция добавлена, можно добавить еще акции", reply_markup=admin_stocks_keyboard)
     except sqlite3.IntegrityError as error:
-        logging.error(error)
+        logger.error(error)

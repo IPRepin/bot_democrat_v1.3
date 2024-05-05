@@ -42,3 +42,7 @@ class DatabasePatient(DatabaseConnect):
         sql = "UPDATE Patient SET user_name = ?, phone = ? WHERE user_id = ?"
         parameters = (user_name, phone, user_id)
         self.execute(sql, parameters, commit=True)
+
+    def select_all_patients_by_id(self):
+        sql = "SELECT user_id FROM Users"
+        return self.execute(sql, fetchall=True)

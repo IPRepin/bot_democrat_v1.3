@@ -11,7 +11,9 @@ from dotenv import load_dotenv
 from data.sqlite_db_patient import DatabasePatient
 from data.sqlite_db_stocks import DatabaseStocks
 from data.sqlite_db_users import DatabaseUsers
-from hendlers.admin_hendlers import admin_router
+from hendlers.admin_add_stock import admin_stocks_router
+from hendlers.admin_handler import admin_router
+from hendlers.admin_mailing_hendlers import router_admin_mailing
 from hendlers.hendler_commands import router_commands
 from hendlers.main_users_handler import main_users_router
 from hendlers.states_recording_handler import recorder_router
@@ -42,6 +44,8 @@ async def connect_telegram():
                        main_users_router,
                        router_stocks,
                        admin_router,
+                       admin_stocks_router,
+                       router_admin_mailing,
                        recorder_router)
     create_tables()
     try:
