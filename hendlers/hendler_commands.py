@@ -2,18 +2,18 @@ import logging
 import os
 import sqlite3
 
-from dotenv import load_dotenv
-
-from aiogram import types, Router, Bot
+from aiogram import types, Router
 from aiogram.filters import CommandStart
+from dotenv import load_dotenv
 
 from data.sqlite_db_users import DatabaseUsers
 from data.stikers import sticker_start
-from keyboards.replay import main_markup, admin_markup
+from keyboards.replay import main_markup, admin_main_keyboard
 
 router_commands = Router()
 load_dotenv()
 logger = logging.getLogger(__name__)
+
 
 @router_commands.message(CommandStart())
 async def get_start(message: types.Message) -> None:
@@ -39,7 +39,7 @@ async def get_start(message: types.Message) -> None:
         else:
             await message.answer(f"{message.from_user.first_name} "
                                  f"вы являетесь администратором бота.\n",
-                                 reply_markup=admin_markup
+                                 reply_markup=admin_main_keyboard
                                  )
     except (sqlite3.IntegrityError, sqlite3.OperationalError) as err:
         logger.error(err)

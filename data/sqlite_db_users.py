@@ -39,3 +39,7 @@ class DatabaseUsers(DatabaseConnect):
 
     def delete_user(self):
         self.execute("DELETE FROM Users WHERE TRUE")
+
+    def select_all_user_by_id(self):
+        sql = "SELECT user_id FROM Users"
+        return self.execute(sql, fetchall=True)
