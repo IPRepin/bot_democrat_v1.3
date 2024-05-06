@@ -42,3 +42,9 @@ class DatabaseStocks(DatabaseConnect):
     def delete_stocks(self):
         self.execute("DELETE FROM Stocks WHERE TRUE")
 
+    def update_stock(self, stock_id, **kwargs):
+        sql = "UPDATE Stocks SET "
+        sql += ", ".join([f"{key} = ?" for key in kwargs])
+        sql += f" WHERE id = {stock_id}"
+        parameters = tuple(kwargs.values())
+        self.execute(sql, parameters, commit=True)

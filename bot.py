@@ -11,13 +11,14 @@ from dotenv import load_dotenv
 from data.sqlite_db_patient import DatabasePatient
 from data.sqlite_db_stocks import DatabaseStocks
 from data.sqlite_db_users import DatabaseUsers
-from hendlers.admin_add_stock import admin_stocks_router
+from hendlers.stock_hendlers.admin_add_stock import admin_stocks_router
 from hendlers.admin_handler import admin_router
 from hendlers.admin_mailing_hendlers import router_admin_mailing
 from hendlers.hendler_commands import router_commands
 from hendlers.main_users_handler import main_users_router
 from hendlers.states_recording_handler import recorder_router
-from hendlers.stocks_hendler import router_stocks
+from hendlers.stock_hendlers.edit_stock import edit_stock_router
+from hendlers.stock_hendlers.stocks_hendler import router_stocks
 from utils.commands import register_commands
 from utils.logger_settings import setup_logging
 
@@ -45,6 +46,7 @@ async def connect_telegram():
                        router_stocks,
                        admin_router,
                        admin_stocks_router,
+                       edit_stock_router,
                        router_admin_mailing,
                        recorder_router)
     create_tables()

@@ -11,6 +11,17 @@ class StatesAddStocks(StatesGroup):
     PRICE = State()
 
 
+class StatesEditStocks(StatesGroup):
+    """
+    Модуль определения состояний для добавления акций
+    """
+    ID = State()
+    NAME = State()
+    DESCRIPTION = State()
+    IMAGE = State()
+    PRICE = State()
+
+
 class MailingState(StatesGroup):
     """
     Модуль определения состояний для отправки рассылки

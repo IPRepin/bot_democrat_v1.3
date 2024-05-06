@@ -19,8 +19,9 @@ main_markup = ReplyKeyboardMarkup(keyboard=[
 admin_stocks_keyboard = ReplyKeyboardMarkup(keyboard=[
     [
         KeyboardButton(text="Добавить акцию"),
-        KeyboardButton(text="Удалить все акции"),
+        KeyboardButton(text="Изменить акцию"),
     ],
+    [KeyboardButton(text="Удалить все акции")],
     [KeyboardButton(text="◀️назад")]
 ], resize_keyboard=True, one_time_keyboard=True
 )
