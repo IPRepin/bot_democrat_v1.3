@@ -44,11 +44,12 @@ async def connect_telegram():
     dp.include_routers(router_commands,
                        main_users_router,
                        router_stocks,
+                       recorder_router,
                        admin_router,
                        admin_stocks_router,
                        edit_stock_router,
                        router_admin_mailing,
-                       recorder_router)
+                       )
     create_tables()
     try:
         await bot.delete_webhook(drop_pending_updates=True)
