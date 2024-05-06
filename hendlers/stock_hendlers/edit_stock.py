@@ -58,12 +58,6 @@ async def edit_stock_price(message: types.Message, state: FSMContext) -> None:
     await state.update_data(stock_price=message.text)
     data = await state.get_data()
     await state.clear()
-    # await message.answer_photo(
-    #     photo=data.get('stock_image'),
-    #     caption=f"{data.get('id')}\n"
-    #     f"{data.get('stock_name')}\n"
-    #     f"{data.get('stock_description')}\n"
-    #     f"{data.get('stock_price')}\n")
     db_stocks.update_stock(
         stock_id=data.get('id'),
         name=data.get('stock_name'),
