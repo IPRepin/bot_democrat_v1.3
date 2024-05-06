@@ -41,6 +41,8 @@ async def recording(message: types.Message) -> None:
     await message.answer(
         f"{message.from_user.first_name}\n"
         "Запишитесь нажав на кнопку\n"
+        "'🌐Онлайн запись'\n"
+        "или\n"
         "'📲Связаться через телеграм'\n",
         reply_markup=online_entries_keyboard,
     )
@@ -51,17 +53,27 @@ async def story_recording(message: types.Message) -> None:
     """
     Обработчик кнопки Мои записи
     """
-    patient = db_patient.select_patient(user_id=message.from_user.id)
-    phone = patient[2]
-    logger.info(f"phone: {phone}")
-    if phone:
-        msg = info(phone)
-        await message.answer(msg, reply_markup=online_entries_keyboard)
-    else:
+    try:
+        patient = db_patient.select_patient(user_id=message.from_user.id)
+        phone = patient[2]
+        logger.info(f"phone: {phone}")
+        if phone:
+            msg = info(phone)
+            await message.answer(msg, reply_markup=online_entries_keyboard)
+        else:
+            await message.answer(
+                f"{message.from_user.first_name}\n"
+                f"На данный момент у Вас нет запланированных \
+                приемов в нашей Клинике.\n"
+                "Для записи нажмите кнопку '📲Связаться через телеграм'",
+                reply_markup=not_entries_keyboard,
+            )
+    except TypeError as e:
+        logger.error(e)
         await message.answer(
             f"{message.from_user.first_name}\n"
             f"На данный момент у Вас нет запланированных \
-            приемов в нашей Клинике.\n"
+                        приемов в нашей Клинике.\n"
             "Для записи нажмите кнопку '📲Связаться через телеграм'",
             reply_markup=not_entries_keyboard,
         )
