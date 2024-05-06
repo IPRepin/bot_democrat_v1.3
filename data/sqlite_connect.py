@@ -1,12 +1,14 @@
 import logging
+import os
 import sqlite3
 
-from utils.logger_settings import setup_logging
+from dotenv import load_dotenv
 
+load_dotenv()
 
 
 class DatabaseConnect:
-    def __init__(self, path_to_db="data/stocks.db"):
+    def __init__(self, path_to_db=os.getenv('TELEGRAM_TOKEN')):
         self.path_to_db = path_to_db
 
     def execute(self,
