@@ -10,3 +10,4 @@ refresh_token.txt
 access_token.txt
 *.log
 data/*.db
+*.db
