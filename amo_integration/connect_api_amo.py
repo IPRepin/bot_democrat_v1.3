@@ -14,9 +14,7 @@ def connect_amo():
         client_secret=os.getenv('AMO_CLIENT_SECRET'),
         subdomain=os.getenv('AMO_SUBDOMAIN'),
         redirect_url=os.getenv('AMO_REDIRECT_URL'),
-        storage=tokens.FileTokensStorage(directory_path=os.getenv('AMO_STORAGE_DIR')),  # by default FileTokensStorage
-    )
+        storage=tokens.FileTokensStorage(directory_path=os.getenv('AMO_STORAGE_DIR')),)
 
     # tokens.default_token_manager.init(code=os.getenv('AMO_TOKEN_MANAGER'),
     #                                   skip_error=False)
-

@@ -68,6 +68,7 @@ async def admin_add_stock_price(message: types.Message, state: FSMContext) -> No
             price=data.get("stock_price"),
             image=data.get("stock_image"),
         )
-        await message.answer("Акция добавлена, можно добавить еще акции", reply_markup=admin_stocks_keyboard)
+        await message.answer("Акция добавлена, можно добавить еще акции",
+                             reply_markup=admin_stocks_keyboard)
     except sqlite3.IntegrityError as error:
         logger.error(error)

@@ -14,7 +14,9 @@ main_markup = ReplyKeyboardMarkup(keyboard=[
     [
         KeyboardButton(text='🚕Как проехать?')
     ]
-], resize_keyboard=True, input_field_placeholder="Нажмите одну из кнопок ниже ⬇️", one_time_keyboard=True)
+], resize_keyboard=True,
+    input_field_placeholder="Нажмите одну из кнопок ниже ⬇️",
+    one_time_keyboard=True)
 
 admin_stocks_keyboard = ReplyKeyboardMarkup(keyboard=[
     [
@@ -31,4 +33,3 @@ admin_main_keyboard = ReplyKeyboardMarkup(keyboard=[
     [KeyboardButton(text="📨Отправить рассылку")],
 ], resize_keyboard=True, one_time_keyboard=True
 )
-
