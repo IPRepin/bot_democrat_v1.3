@@ -45,18 +45,9 @@ async def enter_phone(message: types.Message, state: FSMContext) -> None:
     Функция получения номера телефона
     пользователя в АМО
     """
-    waiting_text = (
-        "Время ожидания ввода истекло,\n"
-        "повторите попытку нажав кнопку\n"
-        "'✅Записаться на прием'"
-    )
     await state.update_data(answer_name=message.text)
     await message.answer("Введите номер телефона:")
     await state.set_state(OnlineRecording.PHONE)
-    # await asyncio.sleep(40)
-    # if await state.get_state() == "OnlineRecording:PHONE":
-    #     await message.answer(waiting_text, reply_markup=main_markup)
-    #     await state.clear()
 
 
 @recorder_router.message(OnlineRecording.PHONE)
@@ -90,5 +81,3 @@ async def end_enter(message: types.Message, state: FSMContext) -> None:
         logger.info(f"update patient {message.from_user.id}")
     except sqlite3.OperationalError as err:
         logger.error(err)
-
-

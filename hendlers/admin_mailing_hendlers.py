@@ -9,7 +9,10 @@ from pydantic import ValidationError
 
 from data.sqlite_db_patient import DatabasePatient
 from data.sqlite_db_users import DatabaseUsers
-from keyboards.inline import mail_users_keyboard, get_confirm_button, confirm_maling_button, add_mailing_button
+from keyboards.inline import (mail_users_keyboard,
+                              get_confirm_button,
+                              confirm_maling_button,
+                              add_mailing_button)
 from keyboards.replay import admin_main_keyboard
 from utils.states import MailingState
 
