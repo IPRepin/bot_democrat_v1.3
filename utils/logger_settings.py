@@ -1,23 +1,22 @@
 '''
 Модуль отправки логов в Telegram
 '''
+import os
+
 import urllib3
 import logging
-import os
 from datetime import datetime
 from logging import LogRecord, Handler
 from logging.handlers import RotatingFileHandler
 
-from dotenv import load_dotenv
-
-load_dotenv()
+from config import TELEGRAM_LOGS_TOKEN, TG_CHAT_ID_LOGS, LOGS_PATH
 
 
 class TelegramBotHandler(Handler):
     def __init__(self):
         super().__init__()
-        self.token = os.getenv('TELEGRAM_LOGS_TOKEN')
-        self.chat_id = os.getenv("TG_CHATID_LOGS")
+        self.token = TELEGRAM_LOGS_TOKEN
+        self.chat_id = TG_CHAT_ID_LOGS
 
     def emit(self, record: LogRecord) -> None:
         url = f'https://api.telegram.org/bot{self.token}/sendMessage'
@@ -29,7 +28,7 @@ class TelegramBotHandler(Handler):
 
 def setup_logging():
     logging.basicConfig(level=logging.INFO)
-    logs_path = os.getenv('LOGS_PATH')
+    logs_path = LOGS_PATH
     if not logs_path:
         logs_path = "logs"
     if not os.path.exists(logs_path):

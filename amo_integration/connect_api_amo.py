@@ -1,8 +1,8 @@
 from amocrm.v2 import tokens
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
+from config import (AMO_CLIENT_ID, AMO_STORAGE_DIR,
+                    AMO_REDIRECT_URL, AMO_SUBDOMAIN,
+                    AMO_CLIENT_SECRET, AMO_TOKEN_MANAGER)
 
 
 def connect_amo():
@@ -10,11 +10,11 @@ def connect_amo():
     Модуль подключения к АМО CRM
     """
     tokens.default_token_manager(
-        client_id=os.getenv('AMO_CLIENT_ID'),
-        client_secret=os.getenv('AMO_CLIENT_SECRET'),
-        subdomain=os.getenv('AMO_SUBDOMAIN'),
-        redirect_url=os.getenv('AMO_REDIRECT_URL'),
-        storage=tokens.FileTokensStorage(directory_path=os.getenv('AMO_STORAGE_DIR')),)
+        client_id=AMO_CLIENT_ID,
+        client_secret=AMO_CLIENT_SECRET,
+        subdomain=AMO_SUBDOMAIN,
+        redirect_url=AMO_REDIRECT_URL,
+        storage=tokens.FileTokensStorage(directory_path=AMO_STORAGE_DIR), )
 
-    # tokens.default_token_manager.init(code=os.getenv('AMO_TOKEN_MANAGER'),
+    # tokens.default_token_manager.init(code=AMO_TOKEN_MANAGER,
     #                                   skip_error=False)
