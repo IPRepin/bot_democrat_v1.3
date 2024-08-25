@@ -1,11 +1,8 @@
-import os
 from typing import List
 
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
-from dotenv import load_dotenv
-
-load_dotenv()
+from config import settings
 
 
 class AdminsFilter(BaseFilter):
@@ -20,6 +17,6 @@ class AdminsFilter(BaseFilter):
 
 def admins_filter():
     admins = []
-    for admin in os.getenv("ADMINS_ID").split(","):
+    for admin in settings.ADMINS_ID.split(","):
         admins.append(int(admin))
     return admins

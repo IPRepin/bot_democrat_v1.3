@@ -1,12 +1,12 @@
 import asyncio
 import logging
-import os
 import sqlite3
+
+from config import settings
 
 from aiogram import Bot, Dispatcher
 from aiogram.exceptions import TelegramNetworkError, TelegramRetryAfter
 from aiogram.fsm.storage.redis import RedisStorage
-from dotenv import load_dotenv
 
 from data.sqlite_db_patient import DatabasePatient
 from data.sqlite_db_stocks import DatabaseStocks
@@ -38,8 +38,8 @@ def create_tables():
 
 
 async def connect_telegram():
-    storage = RedisStorage.from_url("redis://localhost:6379/0")
-    bot = Bot(token=telegram_token, parse_mode="HTML")
+    storage = RedisStorage.from_url(settings.REDIS_URL)
+    bot = Bot(token=settings.TELEGRAM_TOKEN, parse_mode="HTML")
     dp = Dispatcher(storage=storage)
     dp.include_routers(router_commands,
                        main_users_router,
@@ -72,11 +72,9 @@ def main():
 
 
 if __name__ == '__main__':
-    load_dotenv()
     setup_logging()
     logger = logging.getLogger(__name__)
     db_stocks = DatabaseStocks()
     db_users = DatabaseUsers()
     db_patient = DatabasePatient()
-    telegram_token = os.getenv('TELEGRAM_TOKEN')
     main()

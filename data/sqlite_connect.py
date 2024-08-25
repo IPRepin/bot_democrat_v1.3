@@ -2,13 +2,11 @@ import logging
 import os
 import sqlite3
 
-from dotenv import load_dotenv
-
-load_dotenv()
+from config import settings
 
 
 class DatabaseConnect:
-    def __init__(self, path_to_db=os.getenv('PATH_TO_DB')):
+    def __init__(self, path_to_db=settings.PATH_TO_DB):
         self.path_to_db = path_to_db
 
     def execute(self,
