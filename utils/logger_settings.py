@@ -44,4 +44,4 @@ def setup_logging():
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     log_handler.setFormatter(formatter)
     logging.getLogger().addHandler(log_handler)
-    # logging.getLogger().addHandler(TelegramBotHandler())
+    logging.getLogger().addHandler(TelegramBotHandler())
