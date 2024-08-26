@@ -25,10 +25,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-      sqlite:
-        image: sqlite:3.42.0
-        env:
-          PATH_TO_DB: ${{ env.PATH_TO_DB }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
