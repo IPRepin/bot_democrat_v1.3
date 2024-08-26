@@ -8,6 +8,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.exceptions import TelegramNetworkError, TelegramRetryAfter
 from aiogram.fsm.storage.redis import RedisStorage
 
+from config import REDIS_URL, TELEGRAM_TOKEN
 from data.sqlite_db_patient import DatabasePatient
 from data.sqlite_db_stocks import DatabaseStocks
 from data.sqlite_db_users import DatabaseUsers
@@ -38,8 +39,10 @@ def create_tables():
 
 
 async def connect_telegram():
+
     storage = RedisStorage.from_url(settings.REDIS_URL)
     bot = Bot(token=settings.TELEGRAM_TOKEN, parse_mode="HTML")
+
     dp = Dispatcher(storage=storage)
     dp.include_routers(router_commands,
                        main_users_router,

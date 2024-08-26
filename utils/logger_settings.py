@@ -2,10 +2,12 @@
 Модуль отправки логов в Telegram
 '''
 
+
 import os
 import urllib3
 import logging
 from config import settings
+
 from datetime import datetime
 from logging import LogRecord, Handler
 from logging.handlers import RotatingFileHandler
@@ -14,6 +16,7 @@ from logging.handlers import RotatingFileHandler
 class TelegramBotHandler(Handler):
     def __init__(self):
         super().__init__()
+
         self.token = settings.TELEGRAM_LOGS_TOKEN
         self.chat_id = settings.TG_CHATID_LOGS
 
@@ -28,6 +31,7 @@ class TelegramBotHandler(Handler):
 def setup_logging():
     logging.basicConfig(level=logging.INFO)
     logs_path = settings.LOGS_PATH
+
     if not logs_path:
         logs_path = "logs"
     if not os.path.exists(logs_path):

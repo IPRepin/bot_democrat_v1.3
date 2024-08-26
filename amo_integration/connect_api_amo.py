@@ -1,4 +1,5 @@
 from amocrm.v2 import tokens
+
 from config import settings
 
 
@@ -14,4 +15,4 @@ def connect_amo():
         storage=tokens.FileTokensStorage(directory_path=settings.AMO_STORAGE_DIR), )
 
     # tokens.default_token_manager.init(code=settings.AMO_CODE,
-    #                                   skip_error=False)
+
