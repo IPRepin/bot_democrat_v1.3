@@ -11,7 +11,7 @@ from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 
 from amo_integration.amo_commands import add_contact
-from keyboards.replay import main_markup
+from keyboards.main_replay_keyboards import main_markup
 from utils.states_online_recording import OnlineRecording
 from data.sqlite_db_patient import DatabasePatient
 

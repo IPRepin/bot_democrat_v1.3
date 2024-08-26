@@ -11,7 +11,7 @@ from data.sqlite_db_patient import DatabasePatient
 from data.sqlite_db_users import DatabaseUsers
 from keyboards.admin_keyboards.main_admin_keyboards import add_mailing_button, get_confirm_button, \
     confirm_maling_button, get_main_admin_keyboard
-from keyboards.replay import admin_main_keyboard
+from keyboards.main_replay_keyboards import admin_main_keyboard
 from utils.states import MailingState
 
 router_admin_mailing = Router()

@@ -10,7 +10,7 @@ from keyboards.user_keyboards.main_user_keyboards import (not_entries_keyboard,
                                                           review_clinic_keyboard,
                                                           taxi_keyboard)
 from keyboards.admin_keyboards.inline_kb_stocks import choosing_promotion_keyboards
-from keyboards.replay import main_markup
+from keyboards.main_replay_keyboards import main_markup
 
 logger = logging.getLogger(__name__)
 

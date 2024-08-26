@@ -1,0 +1,61 @@
+name: Test and Deploy
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  tests:
+    runs-on: ubuntu-22.04
+    env:
+      REDIS_URL: ${{ secrets.REDIS_URL }}
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+      TELEGRAM_LOGS_TOKEN: ${{ secrets.TELEGRAM_LOGS_TOKEN }}
+      LOGS_PATH: ${{ secrets.LOGS_PATH  }}
+      PATH_TO_DB: ${{ secrets.PATH_TO_DB }}
+    services:
+      redis:
+        image: redis
+        env:
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
+          REDIS_URL: ${{ env.REDIS_URL }}
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      sqlite:
+        image: sqlite:3.42.0
+        env:
+          PATH_TO_DB: ${{ env.PATH_TO_DB }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run linters
+        run: ruff check
+
+#      - name: Run tests
+#        run: |
+#          pytest
+
+#      - name: Deploy
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.SERVER_HOST_NAME }}
+#          username: ${{ secrets.SERVER_USER_NAME }}
+#          password: ${{ secrets.SERVER_PASSWORD }}
+#          script: |
+#            cd /opt/multy_bot
+#            git pull
+#            source venv/bin/activate
+#            sudo systemctl restart multy_bot

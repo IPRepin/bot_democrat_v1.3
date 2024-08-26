@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 from data.sqlite_db_stocks import DatabaseStocks
 from filters.admin_filter import AdminsFilter, admins_filter
-from keyboards.replay import admin_stocks_keyboard, admin_main_keyboard
+from keyboards.main_replay_keyboards import admin_stocks_keyboard, admin_main_keyboard
 from utils.states import StatesAddStocks
 
 load_dotenv()
