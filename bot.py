@@ -1,22 +1,22 @@
 import asyncio
 import logging
-import os
 import sqlite3
+
+from config import settings
 
 from aiogram import Bot, Dispatcher
 from aiogram.exceptions import TelegramNetworkError, TelegramRetryAfter
 from aiogram.fsm.storage.redis import RedisStorage
-from dotenv import load_dotenv
 
 from config import REDIS_URL, TELEGRAM_TOKEN
 from data.sqlite_db_patient import DatabasePatient
 from data.sqlite_db_stocks import DatabaseStocks
 from data.sqlite_db_users import DatabaseUsers
 from hendlers.stock_hendlers.admin_add_stock import admin_stocks_router
-from hendlers.admin_handler import admin_router
-from hendlers.admin_mailing_hendlers import router_admin_mailing
+from hendlers.admin_handlers.admin_handler import admin_router
+from hendlers.admin_handlers.admin_mailing_hendlers import router_admin_mailing
 from hendlers.hendler_commands import router_commands
-from hendlers.main_users_handler import main_users_router
+from hendlers.user_handlers.main_users_handler import main_users_router
 from hendlers.states_recording_handler import recorder_router
 from hendlers.stock_hendlers.edit_stock import edit_stock_router
 from hendlers.stock_hendlers.stocks_hendler import router_stocks
@@ -39,8 +39,10 @@ def create_tables():
 
 
 async def connect_telegram():
-    storage = RedisStorage.from_url(REDIS_URL)
-    bot = Bot(token=TELEGRAM_TOKEN, parse_mode="HTML")
+
+    storage = RedisStorage.from_url(settings.REDIS_URL)
+    bot = Bot(token=settings.TELEGRAM_TOKEN, parse_mode="HTML")
+
     dp = Dispatcher(storage=storage)
     dp.include_routers(router_commands,
                        main_users_router,
@@ -73,9 +75,8 @@ def main():
 
 
 if __name__ == '__main__':
-    load_dotenv()
     setup_logging()
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger(setup_logging())
     db_stocks = DatabaseStocks()
     db_users = DatabaseUsers()
     db_patient = DatabasePatient()

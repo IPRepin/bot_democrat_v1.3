@@ -1,18 +1,28 @@
-import os
-from dotenv import load_dotenv
+
+from pydantic.v1 import BaseSettings
 
 
-load_dotenv()
+class Settings(BaseSettings):
+    REDIS_URL: str
+    TELEGRAM_TOKEN: str
+    LOGS_PATH: str
+
+    TELEGRAM_LOGS_TOKEN: str
+    TG_CHATID_LOGS: str
+
+    PATH_TO_DB: str
+
+    AMO_TOKEN_MANAGER: str
+    AMO_CLIENT_ID: str
+    AMO_CLIENT_SECRET: str
+    AMO_SUBDOMAIN: str
+    AMO_REDIRECT_URL: str
+    AMO_STORAGE_DIR: str
+
+    ADMINS_ID: str
+
+    class Config:
+        env_file: str = ".env"
 
 
-REDIS_URL = os.getenv("REDIS_URL")
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-AMO_CLIENT_ID = os.getenv("AMO_CLIENT_ID")
-AMO_CLIENT_SECRET = os.getenv("AMO_CLIENT_SECRET")
-AMO_SUBDOMAIN = os.getenv("AMO_SUBDOMAIN")
-AMO_REDIRECT_URL = os.getenv("AMO_REDIRECT_URL")
-AMO_STORAGE_DIR = os.getenv("AMO_STORAGE_DIR")
-TELEGRAM_LOGS_TOKEN = os.getenv("TELEGRAM_LOGS_TOKEN")
-TG_CHAT_ID_LOGS = os.getenv("TG_CHATID_LOGS")
-LOGS_PATH = os.getenv("LOGS_PATH")
-AMO_TOKEN_MANAGER = os.getenv("AMO_TOKEN_MANAGER")
+settings = Settings()

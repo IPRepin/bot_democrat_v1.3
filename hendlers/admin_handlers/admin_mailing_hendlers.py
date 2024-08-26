@@ -9,11 +9,9 @@ from pydantic import ValidationError
 
 from data.sqlite_db_patient import DatabasePatient
 from data.sqlite_db_users import DatabaseUsers
-from keyboards.inline import (mail_users_keyboard,
-                              get_confirm_button,
-                              confirm_maling_button,
-                              add_mailing_button)
-from keyboards.replay import admin_main_keyboard
+from keyboards.admin_keyboards.main_admin_keyboards import add_mailing_button, get_confirm_button, \
+    confirm_maling_button, get_main_admin_keyboard
+from keyboards.main_replay_keyboards import admin_main_keyboard
 from utils.states import MailingState
 
 router_admin_mailing = Router()
@@ -24,7 +22,7 @@ db_patients = DatabasePatient()
 
 @router_admin_mailing.message(F.text == "📨Отправить рассылку")
 async def admin_mailing_hendler(message: Message, state: FSMContext):
-    await message.answer("Кому хотим отправить рассылку?", reply_markup=mail_users_keyboard)
+    await message.answer("Кому хотим отправить рассылку?", reply_markup=await get_main_admin_keyboard())
     await state.set_state(MailingState.CALL_MAILING)
 
 

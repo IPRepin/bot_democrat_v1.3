@@ -1,17 +1,15 @@
 import logging
-import os
 import sqlite3
 
 from aiogram import types, Router
 from aiogram.filters import CommandStart
-from dotenv import load_dotenv
 
+from config import settings
 from data.sqlite_db_users import DatabaseUsers
 from data.stikers import sticker_start
-from keyboards.replay import main_markup, admin_main_keyboard
+from keyboards.main_replay_keyboards import main_markup, admin_main_keyboard
 
 router_commands = Router()
-load_dotenv()
 logger = logging.getLogger(__name__)
 
 
@@ -19,7 +17,7 @@ logger = logging.getLogger(__name__)
 async def get_start(message: types.Message) -> None:
     sticker_id = sticker_start
     try:
-        if str(message.from_user.id) not in os.environ.get("ADMINS_ID").split(","):
+        if str(message.from_user.id) not in settings.ADMINS_ID.split(","):
             DatabaseUsers().add_user(
                 user_id=message.from_user.id,
                 user_name=message.from_user.first_name,
