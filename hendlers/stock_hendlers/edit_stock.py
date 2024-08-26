@@ -4,7 +4,7 @@ from aiogram import Router, F, types
 from aiogram.fsm.context import FSMContext
 
 from data.sqlite_db_stocks import DatabaseStocks
-from keyboards.inline_kb_stocks import edit_promotion_keyboards
+from keyboards.admin_keyboards.inline_kb_stocks import edit_promotion_keyboards
 from keyboards.replay import admin_stocks_keyboard
 from utils.states import StatesEditStocks
 

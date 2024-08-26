@@ -5,7 +5,8 @@ python-dotenv==1.0.0
 amocrm_api
 asgiref~=3.8.1
 redis==5.0.3
+ruff==0.6.2
 flake8==7.0.0
-async_timeout
+async_timeout==4.0.3
 urllib3~=2.0.6
 pydantic~=2.5.3

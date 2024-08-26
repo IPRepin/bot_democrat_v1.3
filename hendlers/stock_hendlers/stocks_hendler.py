@@ -4,8 +4,8 @@ from aiogram import types, Router
 from aiogram.exceptions import TelegramBadRequest
 
 from data.sqlite_db_stocks import DatabaseStocks
-from keyboards.inline import not_entries_keyboard
-from keyboards.inline_kb_stocks import StocksInline, EditStocksInline
+from keyboards.user_keyboards.main_user_keyboards import not_entries_keyboard
+from keyboards.admin_keyboards.inline_kb_stocks import StocksInline
 
 router_stocks = Router()
 

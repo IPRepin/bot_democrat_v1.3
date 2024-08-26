@@ -1,5 +1,4 @@
 import logging
-import os
 import sqlite3
 
 from config import settings
@@ -32,9 +31,9 @@ class DatabaseConnect:
 
 
 def logger_bd(stattement):
-    logging.info(f"""
+    logging.info("""
     ________________________________________
     Executing:
-    {stattement}
+    %s
     ________________________________________
-    """)
+    """, stattement)

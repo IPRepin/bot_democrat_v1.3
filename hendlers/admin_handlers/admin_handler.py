@@ -4,7 +4,7 @@ from aiogram import Router, F
 from aiogram.types import Message
 
 from filters.admin_filter import AdminsFilter, admins_filter
-from keyboards.inline import mail_users_keyboard
+from keyboards.admin_keyboards.main_admin_keyboards import get_main_admin_keyboard
 from keyboards.replay import admin_stocks_keyboard
 
 admin_router = Router()
@@ -24,4 +24,4 @@ async def admin_edit_stocks(message: Message):
                       AdminsFilter(admins_filter()))
 async def add_mailing(message: Message):
     await message.answer("Отправка рассылки",
-                         reply_markup=mail_users_keyboard)
+                         reply_markup=await get_main_admin_keyboard())
