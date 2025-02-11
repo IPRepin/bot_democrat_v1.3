@@ -8,6 +8,12 @@ not_entries_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
+                text="Добавить телефон",
+                callback_data="add_phone",
+            )
+        ],
+        [
+            InlineKeyboardButton(
                 text="📲Записаться через телеграм",
                 url="https://t.me/+79302077377",
             )
@@ -16,7 +22,6 @@ not_entries_keyboard = InlineKeyboardMarkup(
         [InlineKeyboardButton(text="↩️На главное меню", callback_data="cancel")],
     ]
 )
-
 
 """
 Клавиатура записи пользователя
@@ -64,7 +69,6 @@ review_clinic_keyboard = InlineKeyboardMarkup(
     ]
 )
 
-
 """
 Клавиатура вызова такси
 """
@@ -79,7 +83,6 @@ taxi_keyboard = InlineKeyboardMarkup(
         [InlineKeyboardButton(text="↩️На главное меню", callback_data="cancel")],
     ]
 )
-
 
 mail_users_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[

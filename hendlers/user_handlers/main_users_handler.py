@@ -1,7 +1,9 @@
+import asyncio
 import logging
 from datetime import datetime
 
 from aiogram import types, Router, F
+from aiogram.fsm.context import FSMContext
 
 from amo_integration.amo_commands import info
 from data.sqlite_db_patient import DatabasePatient
@@ -11,6 +13,7 @@ from keyboards.user_keyboards.main_user_keyboards import (not_entries_keyboard,
                                                           taxi_keyboard)
 from keyboards.admin_keyboards.inline_kb_stocks import choosing_promotion_keyboards
 from keyboards.main_replay_keyboards import main_markup
+from utils.states import AddPhoneNumber
 
 logger = logging.getLogger(__name__)
 
@@ -108,6 +111,21 @@ async def review_clinic(message: types.Message) -> None:
         f"{message.from_user.first_name}\n" f"{text_discount}",
         reply_markup=review_clinic_keyboard,
     )
+
+
+@main_users_router.callback_query(F.data == "add_phone")
+async def add_phone(call: types.CallbackQuery, state: FSMContext) -> None:
+    waiting_text = (
+        "Время ожидания ввода истекло,\n"
+        "повторите попытку нажав кнопку\n"
+        "'Добавить телефон'"
+    )
+    await state.set_state(AddPhoneNumber.PHONE)
+    await asyncio.sleep(40)
+    if await state.get_state() == "OnlineRecording:NAME":
+        await call.message.answer(waiting_text, reply_markup=main_markup)
+        await state.clear()
+        ##TODO доделать добавление номера в базу и поиск по номеру последней записи
 
 
 @main_users_router.callback_query(F.data == "cancel")
