@@ -100,12 +100,12 @@ async def taxi(message: types.Message) -> None:
     )
 
 
-@main_users_router.message(F.text == "🤩Оставить отзыв")
+@main_users_router.message(F.text == "🤩Почитать отзывы")
 async def review_clinic(message: types.Message) -> None:
     """
     Обработчик кнопки 🤩Оставить отзыв
     """
-    text_discount = "<b>Оставьте отзыв нажав на кнопку ниже\n</b>"
+    text_discount = "<b>Реальные отзывы наших пациентов\n</b>"
 
     await message.answer(
         f"{message.from_user.first_name}\n" f"{text_discount}",
