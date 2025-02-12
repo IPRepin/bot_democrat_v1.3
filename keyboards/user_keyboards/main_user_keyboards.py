@@ -4,8 +4,16 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from config import settings
+
 not_entries_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
+        # [
+        #     InlineKeyboardButton(
+        #         text="Добавить телефон",
+        #         callback_data="add_phone",
+        #     )
+        # ],
         [
             InlineKeyboardButton(
                 text="📲Записаться через телеграм",
@@ -16,7 +24,6 @@ not_entries_keyboard = InlineKeyboardMarkup(
         [InlineKeyboardButton(text="↩️На главное меню", callback_data="cancel")],
     ]
 )
-
 
 """
 Клавиатура записи пользователя
@@ -43,27 +50,20 @@ review_clinic_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
-                text="💬Оставить отзыв на Яндекс Картах",
-                web_app=WebAppInfo(url="https://clck.ru/367gnm")
+                text="💬Почитать отзывы на Яндекс Картах",
+                web_app=WebAppInfo(url=settings.YANDEX_MAPS_URL)
             )
         ],
         [
             InlineKeyboardButton(
-                text="💬Оставить отзыв на Продокторов",
-                web_app=WebAppInfo(url="https://clck.ru/38dSPV")
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text="💬Оставить отзыв на 2ГИС",
-                web_app=WebAppInfo(url="https://clck.ru/38dSTy")
+                text="💬Почитать отзывы на Продокторов",
+                web_app=WebAppInfo(url=settings.PRODOKTOROV_URL)
             )
         ],
         [InlineKeyboardButton(text="↩️На главное меню",
                               callback_data="cancel")],
     ]
 )
-
 
 """
 Клавиатура вызова такси
@@ -73,13 +73,12 @@ taxi_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
-                text="🚖Вызвать такси", web_app=WebAppInfo(url="https://clck.ru/35H49x")
+                text="🚖Вызвать такси", web_app=WebAppInfo(url=settings.CALL_A_TAXI)
             )
         ],
         [InlineKeyboardButton(text="↩️На главное меню", callback_data="cancel")],
     ]
 )
-
 
 mail_users_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[

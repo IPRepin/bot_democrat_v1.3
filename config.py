@@ -21,6 +21,11 @@ class Settings(BaseSettings):
 
     ADMINS_ID: str
 
+    PRODOKTOROV_URL: str
+    YANDEX_MAPS_URL: str
+
+    CALL_A_TAXI: str
+
     class Config:
         env_file: str = ".env"
 

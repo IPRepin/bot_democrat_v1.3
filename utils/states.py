@@ -32,3 +32,10 @@ class MailingState(StatesGroup):
     ADD_BUTTON = State()
     BUTTON_TEXT = State()
     BUTTON_URL = State()
+
+
+class AddPhoneNumber(StatesGroup):
+    """
+    Модуль определения состояний для добавления номера телефона
+    """
+    PHONE = State()

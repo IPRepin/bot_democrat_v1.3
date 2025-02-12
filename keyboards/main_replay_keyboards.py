@@ -9,7 +9,7 @@ main_markup = ReplyKeyboardMarkup(keyboard=[
         KeyboardButton(text='📑Ваши записи'),
     ],
     [
-        KeyboardButton(text='🤩Оставить отзыв')
+        KeyboardButton(text='🤩Почитать отзывы')
     ],
     [
         KeyboardButton(text='🚕Как проехать?')
