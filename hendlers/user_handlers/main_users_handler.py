@@ -5,7 +5,7 @@ from datetime import datetime
 from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 
-from amo_integration.amo_commands import info
+from amo_integration.amo_commands import get_info_patient
 from data.sqlite_db_patient import DatabasePatient
 from keyboards.user_keyboards.main_user_keyboards import (not_entries_keyboard,
                                                           online_entries_keyboard,
@@ -61,7 +61,7 @@ async def story_recording(message: types.Message) -> None:
         phone = patient[2]
         logger.info(f"phone: {phone}")
         if phone:
-            msg = info(phone)
+            msg = get_info_patient(phone)
             await message.answer(msg, reply_markup=online_entries_keyboard)
         else:
             await message.answer(
@@ -114,18 +114,38 @@ async def review_clinic(message: types.Message) -> None:
 
 
 @main_users_router.callback_query(F.data == "add_phone")
-async def add_phone(call: types.CallbackQuery, state: FSMContext) -> None:
+async def input_phone(call: types.CallbackQuery, state: FSMContext) -> None:
     waiting_text = (
         "Время ожидания ввода истекло,\n"
         "повторите попытку нажав кнопку\n"
         "'Добавить телефон'"
     )
+    await call.message.answer("Введите номер телефона:")
     await state.set_state(AddPhoneNumber.PHONE)
     await asyncio.sleep(40)
-    if await state.get_state() == "OnlineRecording:NAME":
+    if await state.get_state() == "AddPhoneNumber:PHONE":
         await call.message.answer(waiting_text, reply_markup=main_markup)
         await state.clear()
-        ##TODO доделать добавление номера в базу и поиск по номеру последней записи
+    await call.answer()
+
+
+@main_users_router.message(AddPhoneNumber.PHONE)
+async def add_phone_to_db(message: types.Message, state: FSMContext) -> None:
+    """
+    Функция добавления телефона в БД
+    """
+    phone = message.text
+    db_patient.add_patient(
+        user_id=message.from_user.id,
+        user_name=message.from_user.username,
+        phone=phone,
+    )
+    await state.clear()
+    await message.answer(
+        f"Ваш номер телефона {phone} успешно добавлен в базу данных",
+        reply_markup=main_markup,
+    )
+
 
 
 @main_users_router.callback_query(F.data == "cancel")

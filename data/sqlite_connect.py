@@ -17,7 +17,7 @@ class DatabaseConnect:
         if not parameters:
             parameters = tuple()
         with sqlite3.connect(self.path_to_db) as connection:
-            connection.set_trace_callback(logger_bd)
+            # connection.set_trace_callback(logger_bd)
             cursor = connection.cursor()
             cursor.execute(sql, parameters)
             if commit:

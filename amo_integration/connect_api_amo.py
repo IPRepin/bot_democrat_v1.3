@@ -14,5 +14,7 @@ def connect_amo():
         redirect_url=settings.AMO_REDIRECT_URL,
         storage=tokens.FileTokensStorage(directory_path=settings.AMO_STORAGE_DIR), )
 
-    # tokens.default_token_manager.init(code=settings.AMO_CODE,
+    # tokens.default_token_manager.init(code="",
+    #                                   skip_error=False)
+
 

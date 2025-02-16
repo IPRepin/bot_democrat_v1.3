@@ -10,7 +10,7 @@ import sqlite3
 from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 
-from amo_integration.amo_commands import add_contact
+from amo_integration.amo_commands import add_lead
 from keyboards.main_replay_keyboards import main_markup
 from utils.states_online_recording import OnlineRecording
 from data.sqlite_db_patient import DatabasePatient
@@ -61,7 +61,7 @@ async def end_enter(message: types.Message, state: FSMContext) -> None:
     await state.clear()
     name = data.get("answer_name")
     phone = message.text
-    await add_contact(name, phone)
+    await add_lead(name, phone)
     logger.info("add contact")
     await message.answer(
         f"Спасибо {name} ваш номер {phone}\n"
