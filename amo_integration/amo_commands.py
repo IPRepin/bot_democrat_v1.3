@@ -46,12 +46,13 @@ def get_info_patient(phone):
     try:
         lead = Lead.objects.get(query=phone)
         if lead:
-            return get_info(lead)
+            return formatting_message(lead)
         contact = Contact.objects.get(query=phone)
         if contact:
+            logger.info(contact.phone)
             get_lead_in_contact = Lead.objects.get(contact_id=contact.id)
             if get_lead_in_contact:
-                return get_info(get_lead_in_contact)
+                return formatting_message(get_lead_in_contact)
     except StopIteration as error:
         logger.error(error)
         text_story_recording = "На данный момент у Вас нет запланированных " \
@@ -60,7 +61,7 @@ def get_info_patient(phone):
         return text_story_recording
 
 
-def get_info(patient) -> str:
+def formatting_message(patient) -> str:
     date = datetime.fromtimestamp(patient.rec_date).strftime("%d.%m.%Y")
     time_ = patient.rec_time
     doctor = patient.doctor

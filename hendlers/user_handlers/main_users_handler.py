@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import sqlite3
 from datetime import datetime
 
 from aiogram import types, Router, F
@@ -13,6 +14,7 @@ from keyboards.user_keyboards.main_user_keyboards import (not_entries_keyboard,
                                                           taxi_keyboard)
 from keyboards.admin_keyboards.inline_kb_stocks import choosing_promotion_keyboards
 from keyboards.main_replay_keyboards import main_markup
+from utils.phone_formated import format_phone_number
 from utils.states import AddPhoneNumber
 
 logger = logging.getLogger(__name__)
@@ -135,16 +137,25 @@ async def add_phone_to_db(message: types.Message, state: FSMContext) -> None:
     Функция добавления телефона в БД
     """
     phone = message.text
-    db_patient.add_patient(
-        user_id=message.from_user.id,
-        user_name=message.from_user.username,
-        phone=phone,
-    )
-    await state.clear()
-    await message.answer(
-        f"Ваш номер телефона {phone} успешно добавлен в базу данных",
-        reply_markup=main_markup,
-    )
+    try:
+        formatted_phone = await format_phone_number(phone)
+        db_patient.add_patient(
+            user_id=message.from_user.id,
+            user_name=message.from_user.username,
+            phone=formatted_phone,
+        )
+        await state.clear()
+        await message.answer(
+            f"Ваш номер телефона {formatted_phone} успешно добавлен в базу данных",
+            reply_markup=main_markup,
+        )
+    except ValueError as e:
+        logger.error(e)
+        await message.answer(
+            f"Введите корректный номер телефона в формате +7(999)999-99-99",
+        )
+    except sqlite3.IntegrityError as e:
+        logger.error(e)
 
 
 
