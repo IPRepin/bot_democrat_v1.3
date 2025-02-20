@@ -1,4 +1,4 @@
-from data.sqlite_connect import DatabaseConnect
+from data.db_connect import DatabaseConnect
 
 
 class DatabaseStocks(DatabaseConnect):

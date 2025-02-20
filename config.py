@@ -1,4 +1,4 @@
-
+from pydantic import computed_field, PostgresDsn
 from pydantic.v1 import BaseSettings
 
 
@@ -29,5 +29,28 @@ class Settings(BaseSettings):
     class Config:
         env_file: str = ".env"
 
+    @computed_field
+    @property
+    def asyncpg_url(self) -> PostgresDsn:
+        return PostgresDsn.build(
+            scheme="postgresql+asyncpg",
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            port=self.POSTGRES_PORT,
+            host=self.POSTGRES_HOST,
+            path=self.POSTGRES_DB,
+        )
+
+    @computed_field
+    @property
+    def postgres_url(self) -> PostgresDsn:
+        return PostgresDsn.build(
+            scheme="postgresql",
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            port=self.POSTGRES_PORT,
+            host=self.POSTGRES_HOST,
+            path=self.POSTGRES_DB,
+        )
 
 settings = Settings()
