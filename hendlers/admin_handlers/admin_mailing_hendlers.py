@@ -7,8 +7,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup
 from pydantic import ValidationError
 
-from data.sqlite_db_patient import DatabasePatient
-from data.sqlite_db_users import DatabaseUsers
+from data.patient_request import DatabasePatient
+from data.user_request import DatabaseUsers
 from keyboards.admin_keyboards.main_admin_keyboards import add_mailing_button, get_confirm_button, \
     confirm_maling_button, get_main_admin_keyboard
 from keyboards.main_replay_keyboards import admin_main_keyboard

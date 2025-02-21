@@ -13,7 +13,7 @@ from aiogram.fsm.context import FSMContext
 from amo_integration.amo_commands import add_contact
 from keyboards.main_replay_keyboards import main_markup
 from utils.states_online_recording import OnlineRecording
-from data.sqlite_db_patient import DatabasePatient
+from data.patient_request import DatabasePatient
 
 recorder_router = Router()
 db = DatabasePatient()

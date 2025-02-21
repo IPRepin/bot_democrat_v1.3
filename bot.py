@@ -8,9 +8,9 @@ from aiogram import Bot, Dispatcher
 from aiogram.exceptions import TelegramNetworkError, TelegramRetryAfter
 from aiogram.fsm.storage.redis import RedisStorage
 
-from data.sqlite_db_patient import DatabasePatient
+from data.patient_request import DatabasePatient
 from data.sqlite_db_stocks import DatabaseStocks
-from data.sqlite_db_users import DatabaseUsers
+from data.user_request import DatabaseUsers
 from hendlers.stock_hendlers.admin_add_stock import admin_stocks_router
 from hendlers.admin_handlers.admin_handler import admin_router
 from hendlers.admin_handlers.admin_mailing_hendlers import router_admin_mailing

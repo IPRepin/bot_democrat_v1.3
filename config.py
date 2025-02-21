@@ -1,8 +1,18 @@
-from pydantic import computed_field, PostgresDsn
+from functools import lru_cache
+
 from pydantic.v1 import BaseSettings
+from pydantic_settings import SettingsConfigDict
+
+from dotenv import load_dotenv
+load_dotenv()
+
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env", env_ignore_empty=True, extra="ignore"
+    )
+
     REDIS_URL: str
     TELEGRAM_TOKEN: str
     LOGS_PATH: str
@@ -10,7 +20,13 @@ class Settings(BaseSettings):
     TELEGRAM_LOGS_TOKEN: str
     TG_CHATID_LOGS: str
 
-    PATH_TO_DB: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_HOST: str
+    POSTGRES_DB: str
+    POSTGRES_PORT: int
+
+    POSTGRES_URL: str
 
     AMO_TOKEN_MANAGER: str
     AMO_CLIENT_ID: str
@@ -26,31 +42,10 @@ class Settings(BaseSettings):
 
     CALL_A_TAXI: str
 
-    class Config:
-        env_file: str = ".env"
 
-    @computed_field
-    @property
-    def asyncpg_url(self) -> PostgresDsn:
-        return PostgresDsn.build(
-            scheme="postgresql+asyncpg",
-            username=self.POSTGRES_USER,
-            password=self.POSTGRES_PASSWORD,
-            port=self.POSTGRES_PORT,
-            host=self.POSTGRES_HOST,
-            path=self.POSTGRES_DB,
-        )
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()
 
-    @computed_field
-    @property
-    def postgres_url(self) -> PostgresDsn:
-        return PostgresDsn.build(
-            scheme="postgresql",
-            username=self.POSTGRES_USER,
-            password=self.POSTGRES_PASSWORD,
-            port=self.POSTGRES_PORT,
-            host=self.POSTGRES_HOST,
-            path=self.POSTGRES_DB,
-        )
 
-settings = Settings()
+settings = get_settings()

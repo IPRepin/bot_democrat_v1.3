@@ -13,11 +13,13 @@ from utils.logger_settings import setup_logging
 logger = logging.getLogger(setup_logging())
 
 engine = create_async_engine(
-    global_settings.asyncpg_url.unicode_string(),
+    global_settings.POSTGRES_URL,
     future=True,
-    echo=False,
+    echo=True,
 )
 
+# expire_on_commit=False will prevent attributes from being expired
+# after commit.
 AsyncSessionFactory = async_sessionmaker(
     engine,
     autoflush=False,

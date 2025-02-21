@@ -6,7 +6,7 @@ from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 
 from amo_integration.amo_commands import info
-from data.sqlite_db_patient import DatabasePatient
+from data.patient_request import DatabasePatient
 from keyboards.user_keyboards.main_user_keyboards import (not_entries_keyboard,
                                                           online_entries_keyboard,
                                                           review_clinic_keyboard,
