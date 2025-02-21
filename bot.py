@@ -8,9 +8,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.exceptions import TelegramNetworkError, TelegramRetryAfter
 from aiogram.fsm.storage.redis import RedisStorage
 
-from data.patient_request import DatabasePatient
-from data.sqlite_db_stocks import DatabaseStocks
-from data.user_request import DatabaseUsers
+
 from hendlers.stock_hendlers.admin_add_stock import admin_stocks_router
 from hendlers.admin_handlers.admin_handler import admin_router
 from hendlers.admin_handlers.admin_mailing_hendlers import router_admin_mailing
@@ -25,9 +23,6 @@ from utils.logger_settings import setup_logging
 
 def create_tables():
     try:
-        db_stocks.create_table_stocks()
-        db_users.create_table_users()
-        db_patient.create_table_patient()
         logger.info("Tables created")
     except sqlite3.IntegrityError as err:
         logger.exception(err)
@@ -76,7 +71,4 @@ def main():
 if __name__ == '__main__':
     setup_logging()
     logger = logging.getLogger(setup_logging())
-    db_stocks = DatabaseStocks()
-    db_users = DatabaseUsers()
-    db_patient = DatabasePatient()
     main()

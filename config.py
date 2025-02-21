@@ -20,12 +20,6 @@ class Settings(BaseSettings):
     TELEGRAM_LOGS_TOKEN: str
     TG_CHATID_LOGS: str
 
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_HOST: str
-    POSTGRES_DB: str
-    POSTGRES_PORT: int
-
     POSTGRES_URL: str
 
     AMO_TOKEN_MANAGER: str
@@ -42,6 +36,8 @@ class Settings(BaseSettings):
 
     CALL_A_TAXI: str
 
+    STICKER_START: str
+    STICKER_HELP: str
 
 @lru_cache
 def get_settings() -> Settings:

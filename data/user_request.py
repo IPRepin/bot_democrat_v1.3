@@ -15,7 +15,6 @@ logger = logging.getLogger(setup_logging())
 async def add_user(session: AsyncSession,
                    tg_id: int,
                    username: str,
-                   user_email: str,
                    user_url: str,
                    ) -> Optional[User]:
     user = await session.scalar(select(User).where(User.user_id == tg_id))
@@ -24,7 +23,6 @@ async def add_user(session: AsyncSession,
             session.add(User(
                 user_name=username,
                 user_id=tg_id,
-                user_email=user_email,
                 user_url=user_url,
             )
             )

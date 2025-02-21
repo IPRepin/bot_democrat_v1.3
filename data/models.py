@@ -8,7 +8,6 @@ class User(BaseModel):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     user_id = Column(BigInteger, nullable=False)
     user_name = Column(String(length=255), nullable=False)
-    user_email = Column(String(length=50), nullable=True)
     user_url = Column(String(length=255), nullable=True)
 
 

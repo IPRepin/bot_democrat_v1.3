@@ -6,7 +6,8 @@ from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 
 from amo_integration.amo_commands import info
-from data.patient_request import DatabasePatient
+from data.db_connect import get_session
+from data.patient_request import get_patient
 from keyboards.user_keyboards.main_user_keyboards import (not_entries_keyboard,
                                                           online_entries_keyboard,
                                                           review_clinic_keyboard,
@@ -18,7 +19,6 @@ from utils.states import AddPhoneNumber
 logger = logging.getLogger(__name__)
 
 main_users_router = Router()
-db_patient = DatabasePatient()
 
 """Функции обработки кнопок основного меню"""
 
@@ -57,8 +57,9 @@ async def story_recording(message: types.Message) -> None:
     Обработчик кнопки Мои записи
     """
     try:
-        patient = db_patient.select_patient(user_id=message.from_user.id)
-        phone = patient[2]
+        async for session in get_session():
+            patient = await get_patient(session=session, user_id=message.from_user.id)
+        phone = patient.phone
         logger.info(f"phone: {phone}")
         if phone:
             msg = info(phone)

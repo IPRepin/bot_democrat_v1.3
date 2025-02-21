@@ -7,8 +7,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup
 from pydantic import ValidationError
 
-from data.patient_request import DatabasePatient
-from data.user_request import DatabaseUsers
+from data.db_connect import get_session
+from data.patient_request import select_all_patient
+from data.user_request import get_all_users
 from keyboards.admin_keyboards.main_admin_keyboards import add_mailing_button, get_confirm_button, \
     confirm_maling_button, get_main_admin_keyboard
 from keyboards.main_replay_keyboards import admin_main_keyboard
@@ -16,8 +17,7 @@ from utils.states import MailingState
 
 router_admin_mailing = Router()
 logger = logging.getLogger(__name__)
-db_users = DatabaseUsers()
-db_patients = DatabasePatient()
+
 
 
 @router_admin_mailing.message(F.text == "📨Отправить рассылку")
@@ -123,11 +123,11 @@ async def send_mails(call_users: str,
                      button_message
                      ):
     all_users = ''
-    if call_users == "send_all_users":
-        all_users = [user[0] for user in db_users.select_all_user_by_id()]
-    elif call_users == "send_patient":
-        all_users = [user[0] for user in
-                     db_patients.select_all_patients_by_id()]
+    async for session in get_session():
+        if call_users == "send_all_users":
+            all_users = [user[0] for user in await get_all_users(session)]
+        elif call_users == "send_patient":
+            all_users = [user[0] for user in await select_all_patient(session)]
     for user in all_users:
         try:
             await bot.send_photo(chat_id=user,

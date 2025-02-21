@@ -5,14 +5,14 @@ from aiogram import Router, F, types
 from aiogram.fsm.context import FSMContext
 from dotenv import load_dotenv
 
-from data.sqlite_db_stocks import DatabaseStocks
+
 from filters.admin_filter import AdminsFilter, admins_filter
 from keyboards.main_replay_keyboards import admin_stocks_keyboard, admin_main_keyboard
 from utils.states import StatesAddStocks
 
 load_dotenv()
 admin_stocks_router = Router()
-db_stocks = DatabaseStocks()
+
 logger = logging.getLogger(__name__)
 
 
@@ -56,19 +56,19 @@ async def admin_add_stock_image(message: types.Message, state: FSMContext) -> No
     await state.set_state(StatesAddStocks.PRICE)
 
 
-@admin_stocks_router.message(StatesAddStocks.PRICE)
-async def admin_add_stock_price(message: types.Message, state: FSMContext) -> None:
-    await state.update_data(stock_price=message.text)
-    data = await state.get_data()
-    await state.clear()
-    try:
-        db_stocks.add_stock(
-            name=data.get("stock_name"),
-            description=data.get("stock_description"),
-            price=data.get("stock_price"),
-            image=data.get("stock_image"),
-        )
-        await message.answer("Акция добавлена, можно добавить еще акции",
-                             reply_markup=admin_stocks_keyboard)
-    except sqlite3.IntegrityError as error:
-        logger.error(error)
+# @admin_stocks_router.message(StatesAddStocks.PRICE)
+# async def admin_add_stock_price(message: types.Message, state: FSMContext) -> None:
+#     await state.update_data(stock_price=message.text)
+#     data = await state.get_data()
+#     await state.clear()
+#     try:
+#         db_stocks.add_stock(
+#             name=data.get("stock_name"),
+#             description=data.get("stock_description"),
+#             price=data.get("stock_price"),
+#             image=data.get("stock_image"),
+#         )
+#         await message.answer("Акция добавлена, можно добавить еще акции",
+#                              reply_markup=admin_stocks_keyboard)
+#     except sqlite3.IntegrityError as error:
+#         logger.error(error)
