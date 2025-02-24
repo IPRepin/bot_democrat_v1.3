@@ -21,16 +21,6 @@ from utils.commands import register_commands
 from utils.logger_settings import setup_logging
 
 
-def create_tables():
-    try:
-        logger.info("Tables created")
-    except sqlite3.IntegrityError as err:
-        logger.exception(err)
-    except sqlite3.OperationalError as err:
-        logger.exception(err)
-    except sqlite3.DatabaseError as err:
-        logger.exception(err)
-
 
 async def connect_telegram():
 
@@ -47,7 +37,6 @@ async def connect_telegram():
                        edit_stock_router,
                        router_admin_mailing,
                        )
-    create_tables()
     try:
         await bot.delete_webhook(drop_pending_updates=True)
         await dp.start_polling(bot)
