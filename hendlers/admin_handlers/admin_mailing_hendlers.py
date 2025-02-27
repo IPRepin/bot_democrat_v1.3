@@ -125,12 +125,13 @@ async def send_mails(call_users: str,
     all_users = ''
     async for session in get_session():
         if call_users == "send_all_users":
-            all_users = [user[0] for user in await get_all_users(session)]
+            all_users =  await get_all_users(session)
         elif call_users == "send_patient":
-            all_users = [user[0] for user in await select_all_patient(session)]
+            all_users = await select_all_patient(session)
     for user in all_users:
+        print(user)
         try:
-            await bot.send_photo(chat_id=user,
+            await bot.send_photo(chat_id=user.user_id,
                                  photo=photo,
                                  caption=mailing_text,
                                  reply_markup=button_message)
@@ -138,7 +139,7 @@ async def send_mails(call_users: str,
         except TelegramRetryAfter as e:
             logger.error(e)
             await asyncio.sleep(e.retry_after)
-            await bot.send_photo(chat_id=user,
+            await bot.send_photo(chat_id=user.user_id,
                                  photo=photo,
                                  caption=mailing_text,
                                  reply_markup=button_message)

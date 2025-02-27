@@ -15,7 +15,7 @@ logger = logging.getLogger(setup_logging())
 engine = create_async_engine(
     global_settings.POSTGRES_URL,
     future=True,
-    echo=True,
+    echo=False,
 )
 
 # expire_on_commit=False will prevent attributes from being expired
@@ -35,5 +35,5 @@ class BaseModel(DeclarativeBase):
 
 async def get_session() -> AsyncGenerator:
     async with AsyncSessionFactory() as session:
-        logger.debug(f"ASYNC Pool: {engine.pool.status()}")
+        logger.info(f"ASYNC Pool: {engine.pool.status()}")
         yield session

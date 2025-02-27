@@ -35,14 +35,17 @@ async def stock_filter(session: AsyncSession, **kwargs) -> Optional[List[Stock]]
     return stocks.all()
 
 
+from sqlalchemy import delete
+
 async def delete_stocks(session: AsyncSession):
-    await session.delete(Stock)
+    await session.execute(delete(Stock))
     logger.info("Акции удалены")
     await session.commit()
 
 
 
 async def update_stock(session: AsyncSession, stock_id: int, **kwargs) -> Optional[Stock]:
+    stock_id = int(stock_id)
     stock = await session.scalar(select(Stock).where(Stock.id == stock_id))
     if stock:
         for key, value in kwargs.items():

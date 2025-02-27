@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import sqlite3
 
 from config import settings
 
