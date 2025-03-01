@@ -9,6 +9,7 @@ import sqlite3
 
 from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
+from sqlalchemy.exc import IntegrityError, OperationalError
 
 from amo_integration.amo_commands import add_contact
 from data.db_connect import get_session
@@ -78,7 +79,7 @@ async def end_enter(message: types.Message, state: FSMContext) -> None:
                 phone=phone
             )
             logger.info(f"add patient {message.from_user.id}")
-    except sqlite3.IntegrityError as err:
+    except IntegrityError as err:
         logger.error(err)
         async for session in get_session():
             await update_patient(
@@ -88,5 +89,5 @@ async def end_enter(message: types.Message, state: FSMContext) -> None:
                 phone=phone
             )
         logger.info(f"update patient {message.from_user.id}")
-    except sqlite3.OperationalError as err:
+    except OperationalError as err:
         logger.error(err)
