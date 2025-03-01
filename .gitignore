@@ -12,3 +12,4 @@ access_token.txt
 data/*.db
 *.db
 
+.env~
