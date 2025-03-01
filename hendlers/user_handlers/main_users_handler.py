@@ -1,26 +1,24 @@
 import asyncio
 import logging
-import sqlite3
 from datetime import datetime
 
 from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 
 from amo_integration.amo_commands import get_info_patient
-from data.sqlite_db_patient import DatabasePatient
+from data.db_connect import get_session
+from data.patient_request import get_patient
 from keyboards.user_keyboards.main_user_keyboards import (not_entries_keyboard,
                                                           online_entries_keyboard,
                                                           review_clinic_keyboard,
                                                           taxi_keyboard)
 from keyboards.admin_keyboards.inline_kb_stocks import choosing_promotion_keyboards
 from keyboards.main_replay_keyboards import main_markup
-from utils.phone_formated import format_phone_number
 from utils.states import AddPhoneNumber
 
 logger = logging.getLogger(__name__)
 
 main_users_router = Router()
-db_patient = DatabasePatient()
 
 """Функции обработки кнопок основного меню"""
 
@@ -59,8 +57,9 @@ async def story_recording(message: types.Message) -> None:
     Обработчик кнопки Мои записи
     """
     try:
-        patient = db_patient.select_patient(user_id=message.from_user.id)
-        phone = patient[2]
+        async for session in get_session():
+            patient = await get_patient(session=session, user_id=message.from_user.id)
+        phone = patient.phone
         logger.info(f"phone: {phone}")
         if phone:
             msg = get_info_patient(phone)
@@ -116,47 +115,18 @@ async def review_clinic(message: types.Message) -> None:
 
 
 @main_users_router.callback_query(F.data == "add_phone")
-async def input_phone(call: types.CallbackQuery, state: FSMContext) -> None:
+async def add_phone(call: types.CallbackQuery, state: FSMContext) -> None:
     waiting_text = (
         "Время ожидания ввода истекло,\n"
         "повторите попытку нажав кнопку\n"
         "'Добавить телефон'"
     )
-    await call.message.answer("Введите номер телефона:")
     await state.set_state(AddPhoneNumber.PHONE)
     await asyncio.sleep(40)
-    if await state.get_state() == "AddPhoneNumber:PHONE":
+    if await state.get_state() == "OnlineRecording:NAME":
         await call.message.answer(waiting_text, reply_markup=main_markup)
         await state.clear()
-    await call.answer()
-
-
-@main_users_router.message(AddPhoneNumber.PHONE)
-async def add_phone_to_db(message: types.Message, state: FSMContext) -> None:
-    """
-    Функция добавления телефона в БД
-    """
-    phone = message.text
-    try:
-        formatted_phone = await format_phone_number(phone)
-        db_patient.add_patient(
-            user_id=message.from_user.id,
-            user_name=message.from_user.username,
-            phone=formatted_phone,
-        )
-        await state.clear()
-        await message.answer(
-            f"Ваш номер телефона {formatted_phone} успешно добавлен в базу данных",
-            reply_markup=main_markup,
-        )
-    except ValueError as e:
-        logger.error(e)
-        await message.answer(
-            f"Введите корректный номер телефона в формате +7(999)999-99-99",
-        )
-    except sqlite3.IntegrityError as e:
-        logger.error(e)
-
+        ##TODO доделать добавление номера в базу и поиск по номеру последней записи
 
 
 @main_users_router.callback_query(F.data == "cancel")

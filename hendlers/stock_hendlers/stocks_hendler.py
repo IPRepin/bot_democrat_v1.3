@@ -3,13 +3,12 @@ import logging
 from aiogram import types, Router
 from aiogram.exceptions import TelegramBadRequest
 
-from data.sqlite_db_stocks import DatabaseStocks
+from data.db_connect import get_session
+from data.stock_request import get_stock
 from keyboards.user_keyboards.main_user_keyboards import not_entries_keyboard
 from keyboards.admin_keyboards.inline_kb_stocks import StocksInline
 
 router_stocks = Router()
-
-db = DatabaseStocks()
 
 logger = logging.getLogger(__name__)
 
@@ -22,12 +21,15 @@ async def show_description(callback_query: types.CallbackQuery,
     Обработчик кнопок акции
     """
     stock_id = int(callback_data.action)
-    stock = db.select_stock(id=stock_id)
-    logger.info(f"stock: {stock}")
     try:
-        await callback_query.message.answer_photo(photo=stock[4],
-                                                  caption=stock[2],
-                                                  reply_markup=not_entries_keyboard)
+        async for session in get_session():
+            stock = await get_stock(session=session, id=stock_id)
+            logger.info(f"stock: {stock}")
+            await callback_query.message.answer_photo(
+                photo=stock.image,
+                caption=stock.description,
+                reply_markup=not_entries_keyboard
+            )
         await callback_query.answer()
     except TelegramBadRequest as e:
         logger.error(e)

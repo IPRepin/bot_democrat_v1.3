@@ -3,13 +3,14 @@ import logging
 from aiogram import Router, F, types
 from aiogram.fsm.context import FSMContext
 
-from data.sqlite_db_stocks import DatabaseStocks
+from data.db_connect import get_session
+from data.stock_request import update_stock
 from keyboards.admin_keyboards.inline_kb_stocks import edit_promotion_keyboards
 from keyboards.main_replay_keyboards import admin_stocks_keyboard
 from utils.states import StatesEditStocks
 
 edit_stock_router = Router()
-db_stocks = DatabaseStocks()
+
 logger = logging.getLogger(__name__)
 
 
@@ -58,11 +59,14 @@ async def edit_stock_price(message: types.Message, state: FSMContext) -> None:
     await state.update_data(stock_price=message.text)
     data = await state.get_data()
     await state.clear()
-    db_stocks.update_stock(
-        stock_id=data.get('id'),
-        name=data.get('stock_name'),
-        description=data.get('stock_description'),
-        image=data.get('stock_image'),
-        price=data.get('stock_price'),
-    )
+    async for session in get_session():
+        await update_stock(
+            session=session,
+            stock_id=data.get('id'),
+            name=data.get('stock_name'),
+            description=data.get('stock_description'),
+            image=data.get('stock_image'),
+            price=data.get('stock_price'),
+        )
     await message.answer("Акция изменена", reply_markup=admin_stocks_keyboard)
+

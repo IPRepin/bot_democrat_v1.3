@@ -54,4 +54,5 @@ jobs:
             cd /opt/bot_democrat_v1.3
             git pull
             source venv/bin/activate
+            alembic upgrade head
             sudo systemctl restart bot_democrat
