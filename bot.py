@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import sqlite3
 
 from config import settings
 
@@ -8,9 +7,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.exceptions import TelegramNetworkError, TelegramRetryAfter
 from aiogram.fsm.storage.redis import RedisStorage
 
-from data.sqlite_db_patient import DatabasePatient
-from data.sqlite_db_stocks import DatabaseStocks
-from data.sqlite_db_users import DatabaseUsers
+
 from hendlers.stock_hendlers.admin_add_stock import admin_stocks_router
 from hendlers.admin_handlers.admin_handler import admin_router
 from hendlers.admin_handlers.admin_mailing_hendlers import router_admin_mailing
@@ -22,19 +19,6 @@ from hendlers.stock_hendlers.stocks_hendler import router_stocks
 from utils.commands import register_commands
 from utils.logger_settings import setup_logging
 
-
-def create_tables():
-    try:
-        db_stocks.create_table_stocks()
-        db_users.create_table_users()
-        db_patient.create_table_patient()
-        logger.info("Tables created")
-    except sqlite3.IntegrityError as err:
-        logger.exception(err)
-    except sqlite3.OperationalError as err:
-        logger.exception(err)
-    except sqlite3.DatabaseError as err:
-        logger.exception(err)
 
 
 async def connect_telegram():
@@ -52,7 +36,6 @@ async def connect_telegram():
                        edit_stock_router,
                        router_admin_mailing,
                        )
-    create_tables()
     try:
         await bot.delete_webhook(drop_pending_updates=True)
         await dp.start_polling(bot)
@@ -76,7 +59,5 @@ def main():
 if __name__ == '__main__':
     setup_logging()
     logger = logging.getLogger(setup_logging())
-    db_stocks = DatabaseStocks()
-    db_users = DatabaseUsers()
-    db_patient = DatabasePatient()
     main()
+

@@ -1,8 +1,18 @@
+from functools import lru_cache
 
 from pydantic.v1 import BaseSettings
+from pydantic_settings import SettingsConfigDict
+
+from dotenv import load_dotenv
+load_dotenv()
+
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env", env_ignore_empty=True, extra="ignore"
+    )
+
     REDIS_URL: str
     TELEGRAM_TOKEN: str
     LOGS_PATH: str
@@ -10,7 +20,7 @@ class Settings(BaseSettings):
     TELEGRAM_LOGS_TOKEN: str
     TG_CHATID_LOGS: str
 
-    PATH_TO_DB: str
+    POSTGRES_URL: str
 
     AMO_TOKEN_MANAGER: str
     AMO_CLIENT_ID: str
@@ -26,8 +36,14 @@ class Settings(BaseSettings):
 
     CALL_A_TAXI: str
 
-    class Config:
-        env_file: str = ".env"
+    STICKER_START: str
+    STICKER_HELP: str
+
+    LOG_LEVEL: str
+
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()
 
 
-settings = Settings()
+settings = get_settings()
