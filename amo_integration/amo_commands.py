@@ -5,7 +5,7 @@ import logging
 from datetime import datetime
 
 from amocrm.v2 import Lead as _Lead, custom_field
-from amocrm.v2 import Contact, Pipeline
+from amocrm.v2 import Contact
 from asgiref.sync import sync_to_async
 
 from amo_integration.connect_api_amo import connect_amo
