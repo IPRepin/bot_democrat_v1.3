@@ -5,7 +5,6 @@
 
 import asyncio
 import logging
-import sqlite3
 
 from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
