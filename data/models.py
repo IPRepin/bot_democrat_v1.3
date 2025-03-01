@@ -12,7 +12,7 @@ class User(BaseModel):
 
 
 class Patient(BaseModel):
-    __tablename__ = 'patients'
+    __tablename__ = 'patient'
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     user_name = Column(String(length=255), nullable=False)
     user_id = Column(BigInteger, nullable=False, index=True, unique=True)

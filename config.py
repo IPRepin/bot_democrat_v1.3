@@ -39,6 +39,8 @@ class Settings(BaseSettings):
     STICKER_START: str
     STICKER_HELP: str
 
+    LOG_LEVEL: str
+
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
