@@ -5,7 +5,7 @@ from datetime import datetime
 from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 
-from amo_integration.amo_commands import info
+from amo_integration.amo_commands import get_info_patient
 from data.db_connect import get_session
 from data.patient_request import get_patient
 from keyboards.user_keyboards.main_user_keyboards import (not_entries_keyboard,
@@ -62,7 +62,7 @@ async def story_recording(message: types.Message) -> None:
         phone = patient.phone
         logger.info(f"phone: {phone}")
         if phone:
-            msg = info(phone)
+            msg = get_info_patient(phone)
             await message.answer(msg, reply_markup=online_entries_keyboard)
         else:
             await message.answer(

@@ -8,12 +8,12 @@ from config import settings
 
 not_entries_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
-        # [
-        #     InlineKeyboardButton(
-        #         text="Добавить телефон",
-        #         callback_data="add_phone",
-        #     )
-        # ],
+        [
+            InlineKeyboardButton(
+                text="Добавить телефон",
+                callback_data="add_phone",
+            )
+        ],
         [
             InlineKeyboardButton(
                 text="📲Записаться через телеграм",
@@ -31,6 +31,12 @@ not_entries_keyboard = InlineKeyboardMarkup(
 
 online_entries_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text="Добавить телефон",
+                callback_data="add_phone",
+            )
+        ],
         [InlineKeyboardButton(text="🌐Онлайн запись", callback_data="rec_online")],
         [
             InlineKeyboardButton(
