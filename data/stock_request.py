@@ -1,7 +1,7 @@
 import logging
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from typing import Optional, List
 from data.models import Stock
 from utils.logger_settings import setup_logging
@@ -34,8 +34,6 @@ async def stock_filter(session: AsyncSession, **kwargs) -> Optional[List[Stock]]
     stocks = await session.scalars(select(Stock).filter_by(**kwargs))
     return stocks.all()
 
-
-from sqlalchemy import delete
 
 async def delete_stocks(session: AsyncSession):
     await session.execute(delete(Stock))
