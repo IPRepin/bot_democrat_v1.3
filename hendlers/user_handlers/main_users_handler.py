@@ -147,7 +147,7 @@ async def add_phone_from_db(message: types.Message, state: FSMContext) -> None:
                 phone=phone,
                 user_id=message.from_user.id
             )
-        await message.answer(f"Телефон успешно обновлен для проверки записей нажмите '📑Ваши записи'",
+        await message.answer("Телефон успешно обновлен для проверки записей нажмите '📑Ваши записи'",
                              reply_markup=main_markup)
     except IntegrityError as e:
         logger.error(f"Ошибка при добавлении данных в базу данных: {e}")
