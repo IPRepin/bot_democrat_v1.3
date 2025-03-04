@@ -4,10 +4,11 @@ from datetime import datetime
 
 from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
+from sqlalchemy.exc import IntegrityError
 
 from amo_integration.amo_commands import get_info_patient
 from data.db_connect import get_session
-from data.patient_request import get_patient
+from data.patient_request import get_patient, update_patient
 from keyboards.user_keyboards.main_user_keyboards import (not_entries_keyboard,
                                                           online_entries_keyboard,
                                                           review_clinic_keyboard,
@@ -59,9 +60,9 @@ async def story_recording(message: types.Message) -> None:
     try:
         async for session in get_session():
             patient = await get_patient(session=session, user_id=message.from_user.id)
-        phone = patient.phone
-        logger.info(f"phone: {phone}")
-        if phone:
+        if patient:
+            phone = patient.phone
+            logger.info(f"phone: {phone}")
             msg = get_info_patient(phone)
             await message.answer(msg, reply_markup=online_entries_keyboard)
         else:
@@ -121,12 +122,38 @@ async def add_phone(call: types.CallbackQuery, state: FSMContext) -> None:
         "повторите попытку нажав кнопку\n"
         "'Добавить телефон'"
     )
+    await call.message.answer("Добавьте номер телефона в формате +79991234567 для проверки записи к доктору")
+    await call.answer()
     await state.set_state(AddPhoneNumber.PHONE)
     await asyncio.sleep(40)
     if await state.get_state() == "OnlineRecording:NAME":
         await call.message.answer(waiting_text, reply_markup=main_markup)
         await state.clear()
-        ##TODO доделать добавление номера в базу и поиск по номеру последней записи
+
+
+
+@main_users_router.message(AddPhoneNumber.PHONE)
+async def add_phone_from_db(message: types.Message, state: FSMContext) -> None:
+    await state.update_data(phone=message.text)
+    data = await state.get_data()
+    phone = data.get("phone")
+    await state.clear()
+
+    try:
+        async for session in get_session():
+            await update_patient(
+                session=session,
+                user_name=message.from_user.first_name,
+                phone=phone,
+                user_id=message.from_user.id
+            )
+        await message.answer(f"Телефон успешно обновлен для проверки записей нажмите '📑Ваши записи'",
+                             reply_markup=main_markup)
+    except IntegrityError as e:
+        logger.error(f"Ошибка при добавлении данных в базу данных: {e}")
+    except ConnectionRefusedError as e:
+        logger.error(f"Ошибка подключения к базе данных: {e}")
+
 
 
 @main_users_router.callback_query(F.data == "cancel")
