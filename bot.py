@@ -16,6 +16,7 @@ from hendlers.user_handlers.main_users_handler import main_users_router
 from hendlers.states_recording_handler import recorder_router
 from hendlers.stock_hendlers.edit_stock import edit_stock_router
 from hendlers.stock_hendlers.stocks_hendler import router_stocks
+from middleware.phone_middleware import PhoneValidationMiddleware
 from utils.commands import register_commands
 from utils.logger_settings import setup_logging
 
@@ -27,6 +28,7 @@ async def connect_telegram():
     bot = Bot(token=settings.TELEGRAM_TOKEN, parse_mode="HTML")
 
     dp = Dispatcher(storage=storage)
+    dp.message.middleware(PhoneValidationMiddleware())
     dp.include_routers(router_commands,
                        main_users_router,
                        router_stocks,

@@ -61,7 +61,7 @@ async def end_enter(message: types.Message, state: FSMContext) -> None:
     logger.info("save data: %s", data)
     await state.clear()
     name = data.get("answer_name")
-    phone = message.text
+    phone = data.get("formatted_phone")
     await add_lead(name, phone)
     logger.info("add contact")
     await message.answer(

@@ -69,7 +69,17 @@ async def update_patient(session: AsyncSession, user_id: int, **kwargs) -> Optio
 
 
 async def get_patient(session: AsyncSession, **kwargs) -> Optional[Patient]:
-    patient = await session.scalar(select(Patient).where(**kwargs))
+    # Создаем базовый запрос
+    query = select(Patient)
+
+    # Добавляем условия фильтрации
+    for key, value in kwargs.items():
+        query = query.where(getattr(Patient, key) == value)
+
+    # Выполняем запрос
+    patient = await session.scalar(query)
+
     if not patient:
         logger.info("Пациент %s не найден", kwargs.get("user_id"))
+
     return patient
