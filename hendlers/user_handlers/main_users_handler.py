@@ -8,7 +8,9 @@ from sqlalchemy.exc import IntegrityError
 
 from amo_integration.amo_commands import get_info_patient
 from data.db_connect import get_session
+
 from data.patient_request import get_patient, update_patient, add_patient
+
 from keyboards.user_keyboards.main_user_keyboards import (not_entries_keyboard,
                                                           online_entries_keyboard,
                                                           review_clinic_keyboard,
@@ -132,6 +134,7 @@ async def add_phone(call: types.CallbackQuery, state: FSMContext) -> None:
         await state.clear()
 
 
+
 @main_users_router.message(AddPhoneNumber.PHONE)
 async def add_phone_from_db(message: types.Message, state: FSMContext) -> None:
     data = await state.get_data()
@@ -153,6 +156,7 @@ async def add_phone_from_db(message: types.Message, state: FSMContext) -> None:
                     phone=phone,
                     user_id=message.from_user.id
                 )
+
         await message.answer("Телефон успешно обновлен для проверки записей нажмите '📑Ваши записи'",
                              reply_markup=main_markup)
     except IntegrityError as e:
@@ -161,6 +165,7 @@ async def add_phone_from_db(message: types.Message, state: FSMContext) -> None:
         logger.error(f"Ошибка подключения к базе данных: {e}")
     finally:
         await state.clear()
+
 
 
 

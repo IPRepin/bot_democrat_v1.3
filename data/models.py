@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, BigInteger, String
+from sqlalchemy import Column, Integer, BigInteger, String, Text
 
 from data.db_connect import BaseModel
 
@@ -23,6 +23,6 @@ class Stock(BaseModel):
     __tablename__ = 'stocks'
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String(length=255), nullable=False)
-    description = Column(String(length=255), nullable=True)
+    description = Column(Text(), nullable=True)
     price = Column(String(length=255), nullable=True)
     image = Column(String(length=255), nullable=True)

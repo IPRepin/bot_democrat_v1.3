@@ -34,7 +34,7 @@ def upgrade() -> None:
     op.create_table('stocks',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(length=255), nullable=False),
-    sa.Column('description', sa.String(length=255), nullable=True),
+    sa.Column('description', sa.Text(), nullable=True),
     sa.Column('price', sa.String(length=255), nullable=True),
     sa.Column('image', sa.String(length=255), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
