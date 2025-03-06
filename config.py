@@ -41,9 +41,12 @@ class Settings(BaseSettings):
 
     LOG_LEVEL: str
 
+    PHONE_MASK: str='^(?:\\+7|8)\\d{10}$'
+
+
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
 
 
-settings = get_settings()
+settings: Settings = get_settings()

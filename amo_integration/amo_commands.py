@@ -54,7 +54,7 @@ def get_info_patient(phone):
             if get_lead_in_contact:
                 return formatting_message(get_lead_in_contact)
     except StopIteration as error:
-        logger.error(error)
+        logger.exception(error)
         text_story_recording = "На данный момент у Вас нет запланированных " \
                                "приемов в нашей Клинике.\n" \
                                "Для записи нажмите кнопку '🌐Онлайн запись'"

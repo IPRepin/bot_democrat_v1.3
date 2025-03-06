@@ -8,13 +8,16 @@ from sqlalchemy.exc import IntegrityError
 
 from amo_integration.amo_commands import get_info_patient
 from data.db_connect import get_session
-from data.patient_request import get_patient, update_patient
+
+from data.patient_request import get_patient, update_patient, add_patient
+
 from keyboards.user_keyboards.main_user_keyboards import (not_entries_keyboard,
                                                           online_entries_keyboard,
                                                           review_clinic_keyboard,
                                                           taxi_keyboard)
 from keyboards.admin_keyboards.inline_kb_stocks import choosing_promotion_keyboards
 from keyboards.main_replay_keyboards import main_markup
+from utils.phone_formated import format_phone_number
 from utils.states import AddPhoneNumber
 
 logger = logging.getLogger(__name__)
@@ -126,7 +129,7 @@ async def add_phone(call: types.CallbackQuery, state: FSMContext) -> None:
     await call.answer()
     await state.set_state(AddPhoneNumber.PHONE)
     await asyncio.sleep(40)
-    if await state.get_state() == "OnlineRecording:NAME":
+    if await state.get_state() == "AddPhoneNumber.PHONE":
         await call.message.answer(waiting_text, reply_markup=main_markup)
         await state.clear()
 
@@ -134,25 +137,35 @@ async def add_phone(call: types.CallbackQuery, state: FSMContext) -> None:
 
 @main_users_router.message(AddPhoneNumber.PHONE)
 async def add_phone_from_db(message: types.Message, state: FSMContext) -> None:
-    await state.update_data(phone=message.text)
     data = await state.get_data()
-    phone = data.get("phone")
-    await state.clear()
-
+    phone = data.get("formatted_phone")  # Берем уже отвалидированный и отформатированный номер
     try:
         async for session in get_session():
-            await update_patient(
-                session=session,
-                user_name=message.from_user.first_name,
-                phone=phone,
-                user_id=message.from_user.id
-            )
+            patient = await get_patient(session=session, user_id=message.from_user.id)
+            if patient:
+                await update_patient(
+                    session=session,
+                    user_name=message.from_user.first_name,
+                    phone=phone,
+                    user_id=message.from_user.id
+                )
+            else:
+                await add_patient(
+                    session=session,
+                    user_name=message.from_user.first_name,
+                    phone=phone,
+                    user_id=message.from_user.id
+                )
+
         await message.answer("Телефон успешно обновлен для проверки записей нажмите '📑Ваши записи'",
                              reply_markup=main_markup)
     except IntegrityError as e:
         logger.error(f"Ошибка при добавлении данных в базу данных: {e}")
     except ConnectionRefusedError as e:
         logger.error(f"Ошибка подключения к базе данных: {e}")
+    finally:
+        await state.clear()
+
 
 
 
