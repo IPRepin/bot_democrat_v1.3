@@ -17,6 +17,7 @@ from hendlers.states_recording_handler import recorder_router
 from hendlers.stock_hendlers.edit_stock import edit_stock_router
 from hendlers.stock_hendlers.stocks_hendler import router_stocks
 from middleware.phone_middleware import PhoneValidationMiddleware
+from notification.scheduler import setup_scheduler
 from utils.commands import register_commands
 from utils.logger_settings import setup_logging
 
@@ -26,6 +27,10 @@ async def connect_telegram():
 
     storage = RedisStorage.from_url(settings.REDIS_URL)
     bot = Bot(token=settings.TELEGRAM_TOKEN, parse_mode="HTML")
+
+    # Инициализируем планировщик здесь
+    scheduler = setup_scheduler(bot)
+    scheduler.start()
 
     dp = Dispatcher(storage=storage)
     dp.message.middleware(PhoneValidationMiddleware())
@@ -42,6 +47,7 @@ async def connect_telegram():
         await bot.delete_webhook(drop_pending_updates=True)
         await dp.start_polling(bot)
         await register_commands(bot)
+
     except TelegramNetworkError as error:
         logger.error(error)
     finally:
