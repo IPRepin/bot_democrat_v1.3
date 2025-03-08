@@ -9,7 +9,7 @@ def setup_scheduler(bot):
     scheduler.add_job(
         check_and_send_reminders,
         'interval',
-        minutes=1,
+        minutes=60,
         args=[bot]
     )
 

@@ -6,7 +6,7 @@ from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.exc import IntegrityError
 
-from amo_integration.amo_commands import get_info_patient
+from amo_integration.amo_commands import post_msg_patient
 from data.db_connect import get_session
 
 from data.patient_request import get_patient, update_patient, add_patient
@@ -64,7 +64,7 @@ async def story_recording(message: types.Message) -> None:
         if patient:
             phone = patient.phone
             logger.info(f"phone: {phone}")
-            msg = get_info_patient(phone)
+            msg = post_msg_patient(phone)
             await message.answer(msg, reply_markup=online_entries_keyboard)
         else:
             await message.answer(

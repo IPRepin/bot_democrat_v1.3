@@ -9,7 +9,11 @@ from amocrm.v2 import Contact
 from asgiref.sync import sync_to_async
 
 from amo_integration.connect_api_amo import connect_amo
+from data.db_connect import get_session
 from utils.logger_settings import logger
+
+from data.patient_request import select_all_patient
+from utils.time_formated import parse_time
 
 
 class Lead(_Lead):
@@ -37,27 +41,20 @@ def add_lead(name: str, phone: str) -> None:
     logger.info(f"{name} добавлен в АМО")
 
 
-def get_info_patient(phone):
+def post_msg_patient(phone):
     """
     Функция извлечения информации о записи пользователя из АМО
     """
     connect_amo()
-    try:
-        lead = Lead.objects.get(query=phone)
-        if lead:
-            return formatting_message(lead)
-        contact = Contact.objects.get(query=phone)
-        if contact:
-            logger.info(contact.phone)
-            get_lead_in_contact = Lead.objects.get(contact_id=contact.id)
-            if get_lead_in_contact:
-                return formatting_message(get_lead_in_contact)
-    except StopIteration as error:
-        logger.exception(error)
-        text_story_recording = "На данный момент у Вас нет запланированных " \
-                               "приемов в нашей Клинике.\n" \
-                               "Для записи нажмите кнопку '🌐Онлайн запись'"
-        return text_story_recording
+
+    lead = get_lead(phone)
+    if lead:
+        return formatting_message(lead)
+
+    text_story_recording = "На данный момент у Вас нет запланированных " \
+                           "приемов в нашей Клинике.\n" \
+                           "Для записи нажмите кнопку '🌐Онлайн запись'"
+    return text_story_recording
 
 
 def formatting_message(patient) -> str:
@@ -67,73 +64,24 @@ def formatting_message(patient) -> str:
     return f"Вы записаны {date} на {time_} к доктору {doctor}"
 
 
-def normalize_time(hour: int, minute: int) -> tuple[int, int]:
+def get_lead(phone):
     """
-    Нормализует часы и минуты, обрабатывая переполнение
+    Функция извлечения пациента из АМО
     """
-    # Если минуты больше 59, переносим излишек в часы
-    if minute >= 60:
-        extra_hours = minute // 60
-        minute = minute % 60
-        hour += extra_hours
-
-    # Если часы больше 23, берем остаток от деления на 24
-    if hour >= 24:
-        hour = hour % 24
-
-    return hour, minute
-
-
-def parse_time(time_str: str) -> tuple[int, int]:
-    """
-    Парсит строку времени в часы и минуты
-    """
-    # Очищаем строку
-    time_str = str(time_str).strip()
-
-    # Если есть запятая, берем первое время
-    if ',' in time_str:
-        time_str = time_str.split(',')[0].strip()
-
-    # Очищаем от всех символов кроме цифр и двоеточия
-    time_str = ''.join(char for char in time_str if char.isdigit() or char == ':')
-
+    connect_amo()
     try:
-        if ':' in time_str:
-            # Формат "15:00"
-            time_parts = time_str.split(':')
-            hour = int(time_parts[0])
-            minute = int(time_parts[1]) if len(time_parts) > 1 else 0
-        else:
-            # Обработка числового формата
-            if len(time_str) <= 2:
-                # Если только часы (например "9" или "15")
-                hour = int(time_str)
-                minute = 0
-            elif len(time_str) <= 4:
-                # Формат "1930" или "930"
-                time_str = time_str.zfill(4)
-                hour = int(time_str[:2])
-                minute = int(time_str[2:])
-            else:
-                # Если строка слишком длинная, пробуем интерпретировать первые 4 цифры
-                hour = int(time_str[:2])
-                minute = int(time_str[2:4])
-
-        # Пытаемся нормализовать время
-        hour, minute = normalize_time(hour, minute)
-
-        # Финальная проверка на валидность
-        if not (0 <= hour <= 23 and 0 <= minute <= 59):
-            raise ValueError(f"Недопустимое значение времени после нормализации: {hour}:{minute}")
-
-        return hour, minute
-
-    except (ValueError, IndexError) as e:
-        raise ValueError(f"Не удалось распарсить время '{time_str}': {str(e)}")
+        lead = Lead.objects.get(query=phone)
+        if lead:
+            return lead
+        contact = Contact.objects.get(query=phone)
+        if contact:
+            get_lead_in_contact = Lead.objects.get(contact_id=contact.id)
+            return get_lead_in_contact
+    except StopIteration as error:
+        logger.info(f"конец списка - {error}")
 
 
-def get_upcoming_appointments() -> list:
+async def get_upcoming_appointments() -> list:
     """
     Получает список предстоящих записей из AMO CRM
     """
@@ -142,52 +90,54 @@ def get_upcoming_appointments() -> list:
     upcoming_appointments = []
 
     try:
-        leads = Lead.objects.filter()
+        async for session in get_session():
+            leads = await select_all_patient(session=session)
+            for lead in leads:
+                phone = lead.phone
+                lead = get_lead(phone)
 
-        for lead in leads:
-            if not lead.rec_date or not lead.rec_time:
-                continue
+                try:
+                    logger.info(f"Обработка записи {lead.id}, исходное время: {lead.rec_time}")
 
-            try:
-                logger.info(f"Обработка записи {lead.id}, исходное время: {lead.rec_time}")
+                    hour, minute = parse_time(lead.rec_time)
+                    logger.info(f"Распарсенное время для записи {lead.id}: {hour:02d}:{minute:02d}")
 
-                hour, minute = parse_time(lead.rec_time)
-                logger.info(f"Распарсенное время для записи {lead.id}: {hour:02d}:{minute:02d}")
-
-                appointment_date = datetime.fromtimestamp(lead.rec_date)
-                appointment_datetime = appointment_date.replace(
-                    hour=hour,
-                    minute=minute
-                )
-
-                time_diff = appointment_datetime - current_time
-                if 2.9 <= time_diff.total_seconds() / 3600 <= 3.1:
-                    logger.info(f"Найдена подходящая запись: {lead.id}")
-                    appointment_info = {
-                        'lead_id': lead.id,
-                        'name': lead.name,
-                        'phone': lead.source_phone,
-                        'doctor': lead.doctor,
-                        'datetime': appointment_datetime,
-                    }
-                    upcoming_appointments.append(appointment_info)
-                    logger.info(
-                        f"Найдена подходящая запись: ID={lead.id}, "
-                        f"время={appointment_datetime.strftime('%H:%M')}"
+                    appointment_date = datetime.fromtimestamp(lead.rec_date)
+                    appointment_datetime = appointment_date.replace(
+                        hour=hour,
+                        minute=minute
                     )
 
-            except ValueError as e:
-                logger.warning(
-                    f"Некорректное время для записи {lead.id}: {str(e)}, "
-                    f"исходное значение={lead.rec_time}"
-                )
-                continue
-            except Exception as e:
-                logger.error(
-                    f"Неожиданная ошибка при обработке записи {lead.id}: {str(e)}, "
-                    f"исходное значение={lead.rec_time}"
-                )
-                continue
+                    time_diff = appointment_datetime - current_time
+                    hours_remaining = time_diff.total_seconds() / 3600
+
+                    if 2 <= hours_remaining <= 3:
+                        logger.info(f"Найдена подходящая запись: {lead.id}")
+                        appointment_info = {
+                            'lead_id': lead.id,
+                            'name': lead.name,
+                            'phone': lead.source_phone,
+                            'doctor': lead.doctor,
+                            'datetime': appointment_datetime,
+                        }
+                        upcoming_appointments.append(appointment_info)
+                        logger.info(
+                            f"Найдена подходящая запись: ID={lead.id}, "
+                            f"время={appointment_datetime.strftime('%H:%M')}"
+                        )
+
+                except ValueError as e:
+                    logger.warning(
+                        f"Некорректное время для записи {lead.id}: {str(e)}, "
+                        f"исходное значение={lead.rec_time}"
+                    )
+                    continue
+                except Exception as e:
+                    logger.error(
+                        f"Неожиданная ошибка при обработке записи {lead.id}: {str(e)}, "
+                        f"исходное значение={lead.rec_time}"
+                    )
+                    continue
 
     except Exception as error:
         logger.exception("Ошибка при получении записей из AMO: %s", error)
