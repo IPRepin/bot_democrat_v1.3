@@ -1,18 +1,15 @@
-import logging
-import sqlite3
-
 from aiogram import types, Router
 from aiogram.filters import CommandStart
+from sqlalchemy.exc import IntegrityError, OperationalError
 
 from config import settings
 from data.db_connect import get_session
 
 from data.user_request import add_user
 from keyboards.main_replay_keyboards import main_markup, admin_main_keyboard
+from utils.logger_settings import logger
 
 router_commands = Router()
-logger = logging.getLogger(__name__)
-
 
 @router_commands.message(CommandStart())
 async def get_start(message: types.Message) -> None:
@@ -41,7 +38,7 @@ async def get_start(message: types.Message) -> None:
                                  f"вы являетесь администратором бота.\n",
                                  reply_markup=admin_main_keyboard
                                  )
-    except (sqlite3.IntegrityError, sqlite3.OperationalError) as err:
+    except (IntegrityError, OperationalError) as err:
         logger.error(err)
         await message.answer_sticker(sticker=settings.STICKER_START)
         await message.answer(f"С возвращением {message.from_user.first_name}\n"

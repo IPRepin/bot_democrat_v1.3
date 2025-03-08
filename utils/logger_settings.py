@@ -47,3 +47,5 @@ def setup_logging():
     log_handler.setFormatter(formatter)
     logging.getLogger().addHandler(log_handler)
     logging.getLogger().addHandler(TelegramBotHandler())
+
+logger = logging.getLogger(setup_logging())

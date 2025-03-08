@@ -1,5 +1,4 @@
 import asyncio
-import logging
 
 from aiogram import Router, F, Bot
 from aiogram.exceptions import TelegramRetryAfter, TelegramBadRequest
@@ -14,9 +13,9 @@ from keyboards.admin_keyboards.main_admin_keyboards import add_mailing_button, g
     confirm_maling_button, get_main_admin_keyboard
 from keyboards.main_replay_keyboards import admin_main_keyboard
 from utils.states import MailingState
+from utils.logger_settings import logger
 
 router_admin_mailing = Router()
-logger = logging.getLogger(__name__)
 
 
 

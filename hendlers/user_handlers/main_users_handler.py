@@ -1,12 +1,12 @@
 import asyncio
-import logging
+
 from datetime import datetime
 
 from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.exc import IntegrityError
 
-from amo_integration.amo_commands import get_info_patient
+from amo_integration.amo_commands import post_msg_patient
 from data.db_connect import get_session
 
 from data.patient_request import get_patient, update_patient, add_patient
@@ -18,8 +18,7 @@ from keyboards.user_keyboards.main_user_keyboards import (not_entries_keyboard,
 from keyboards.admin_keyboards.inline_kb_stocks import choosing_promotion_keyboards
 from keyboards.main_replay_keyboards import main_markup
 from utils.states import AddPhoneNumber
-
-logger = logging.getLogger(__name__)
+from utils.logger_settings import logger
 
 main_users_router = Router()
 
@@ -65,7 +64,7 @@ async def story_recording(message: types.Message) -> None:
         if patient:
             phone = patient.phone
             logger.info(f"phone: {phone}")
-            msg = get_info_patient(phone)
+            msg = post_msg_patient(phone)
             await message.answer(msg, reply_markup=online_entries_keyboard)
         else:
             await message.answer(

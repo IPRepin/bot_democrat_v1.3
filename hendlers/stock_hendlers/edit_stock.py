@@ -1,5 +1,3 @@
-import logging
-
 from aiogram import Router, F, types
 from aiogram.fsm.context import FSMContext
 
@@ -10,8 +8,6 @@ from keyboards.main_replay_keyboards import admin_stocks_keyboard
 from utils.states import StatesEditStocks
 
 edit_stock_router = Router()
-
-logger = logging.getLogger(__name__)
 
 
 @edit_stock_router.message(F.text == "Изменить акцию")

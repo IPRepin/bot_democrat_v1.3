@@ -13,3 +13,6 @@ data/*.db
 *.db
 
 .env~
+info.txt
+info.txt
+ibfo.txt

@@ -1,15 +1,10 @@
-import logging
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from data.models import Patient
 
 from sqlalchemy import select
 
 from typing import Optional, List
-
-from utils.logger_settings import setup_logging
-
-logger = logging.getLogger(setup_logging())
+from utils.logger_settings import logger
 
 
 async def add_patient(session: AsyncSession,

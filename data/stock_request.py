@@ -1,12 +1,8 @@
-import logging
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 from typing import Optional, List
 from data.models import Stock
-from utils.logger_settings import setup_logging
-
-logger = logging.getLogger(setup_logging())
+from utils.logger_settings import logger
 
 
 async def add_stock(session: AsyncSession, name: str, description: str = None, price: str = None, image: str = None) -> Optional[Stock]:

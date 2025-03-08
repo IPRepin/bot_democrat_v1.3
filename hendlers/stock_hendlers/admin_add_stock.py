@@ -1,4 +1,3 @@
-import logging
 import sqlite3
 
 from aiogram import Router, F, types
@@ -10,11 +9,10 @@ from data.stock_request import delete_stocks, add_stock
 from filters.admin_filter import AdminsFilter, admins_filter
 from keyboards.main_replay_keyboards import admin_stocks_keyboard, admin_main_keyboard
 from utils.states import StatesAddStocks
+from utils.logger_settings import logger
 
 load_dotenv()
 admin_stocks_router = Router()
-
-logger = logging.getLogger(__name__)
 
 
 @admin_stocks_router.message(F.text == "Удалить все акции",
