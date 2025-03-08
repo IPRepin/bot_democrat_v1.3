@@ -1,5 +1,4 @@
 import asyncio
-import logging
 
 from config import settings
 
@@ -19,7 +18,7 @@ from hendlers.stock_hendlers.stocks_hendler import router_stocks
 from middleware.phone_middleware import PhoneValidationMiddleware
 from notification.scheduler import setup_scheduler
 from utils.commands import register_commands
-from utils.logger_settings import setup_logging
+from utils.logger_settings import logger
 
 
 
@@ -28,7 +27,7 @@ async def connect_telegram():
     storage = RedisStorage.from_url(settings.REDIS_URL)
     bot = Bot(token=settings.TELEGRAM_TOKEN, parse_mode="HTML")
 
-    # Инициализируем планировщик здесь
+    # Инициализируем планировщик
     scheduler = setup_scheduler(bot)
     scheduler.start()
 
@@ -65,7 +64,5 @@ def main():
 
 
 if __name__ == '__main__':
-    setup_logging()
-    logger = logging.getLogger(setup_logging())
     main()
 

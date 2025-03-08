@@ -1,7 +1,7 @@
 """
 Модуль команд работы с AMO CRM
 """
-import logging
+
 from datetime import datetime
 
 from amocrm.v2 import Lead as _Lead, custom_field
@@ -9,8 +9,7 @@ from amocrm.v2 import Contact
 from asgiref.sync import sync_to_async
 
 from amo_integration.connect_api_amo import connect_amo
-
-logger = logging.getLogger(__name__)
+from utils.logger_settings import logger
 
 
 class Lead(_Lead):
@@ -150,10 +149,10 @@ def get_upcoming_appointments() -> list:
                 continue
 
             try:
-                logger.debug(f"Обработка записи {lead.id}, исходное время: {lead.rec_time}")
+                logger.info(f"Обработка записи {lead.id}, исходное время: {lead.rec_time}")
 
                 hour, minute = parse_time(lead.rec_time)
-                logger.debug(f"Распарсенное время для записи {lead.id}: {hour:02d}:{minute:02d}")
+                logger.info(f"Распарсенное время для записи {lead.id}: {hour:02d}:{minute:02d}")
 
                 appointment_date = datetime.fromtimestamp(lead.rec_date)
                 appointment_datetime = appointment_date.replace(
@@ -163,6 +162,7 @@ def get_upcoming_appointments() -> list:
 
                 time_diff = appointment_datetime - current_time
                 if 2.9 <= time_diff.total_seconds() / 3600 <= 3.1:
+                    logger.info(f"Найдена подходящая запись: {lead.id}")
                     appointment_info = {
                         'lead_id': lead.id,
                         'name': lead.name,

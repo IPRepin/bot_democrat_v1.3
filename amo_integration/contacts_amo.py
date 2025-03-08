@@ -1,13 +1,10 @@
 """
 Модуль получения контактов AMO CRM
 """
-import logging
-
 from amocrm.v2 import Contact, Lead
 
 from amo_integration.connect_api_amo import connect_amo
 
-logger = logging.getLogger(__name__)
 
 
 class ContactAmo(Contact):

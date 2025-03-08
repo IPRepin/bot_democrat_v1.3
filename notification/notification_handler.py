@@ -3,8 +3,7 @@ from aiogram import Bot
 from amo_integration.amo_commands import get_upcoming_appointments, update_lead_notification_status
 from data.db_connect import get_session
 from data.patient_request import get_patient
-
-logger = logging.getLogger(__name__)
+from utils.logger_settings import logger
 
 
 
@@ -32,12 +31,12 @@ async def check_and_send_reminders(bot: Bot) -> None:
 
             if chat_id:
                 try:
-                    await bot.send_message(
-                        chat_id=chat_id,
-                        text=message_text
-                    )
-                    # Обновляем статус уведомления в AMO
-                    await update_lead_notification_status(appointment['lead_id'])
+                    # await bot.send_message(
+                    #     chat_id=chat_id,
+                    #     text=message_text
+                    # )
+                    # # Обновляем статус уведомления в AMO
+                    # await update_lead_notification_status(appointment['lead_id'])
                     logger.info(
                         "Уведомление отправлено пользователю %s",
                         appointment['phone']

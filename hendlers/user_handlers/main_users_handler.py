@@ -1,5 +1,5 @@
 import asyncio
-import logging
+
 from datetime import datetime
 
 from aiogram import types, Router, F
@@ -18,8 +18,7 @@ from keyboards.user_keyboards.main_user_keyboards import (not_entries_keyboard,
 from keyboards.admin_keyboards.inline_kb_stocks import choosing_promotion_keyboards
 from keyboards.main_replay_keyboards import main_markup
 from utils.states import AddPhoneNumber
-
-logger = logging.getLogger(__name__)
+from utils.logger_settings import logger
 
 main_users_router = Router()
 

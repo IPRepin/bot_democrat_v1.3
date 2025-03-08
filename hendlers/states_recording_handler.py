@@ -4,7 +4,6 @@
 """
 
 import asyncio
-import logging
 
 from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
@@ -15,10 +14,10 @@ from data.db_connect import get_session
 from data.patient_request import add_patient, update_patient
 from keyboards.main_replay_keyboards import main_markup
 from utils.states_online_recording import OnlineRecording
+from utils.logger_settings import logger
 
 recorder_router = Router()
 
-logger = logging.getLogger(__name__)
 
 
 @recorder_router.callback_query(F.data == "rec_online")
