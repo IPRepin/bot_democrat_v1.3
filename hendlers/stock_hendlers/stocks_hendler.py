@@ -1,5 +1,3 @@
-import logging
-
 from aiogram import types, Router
 from aiogram.exceptions import TelegramBadRequest
 
@@ -7,10 +5,9 @@ from data.db_connect import get_session
 from data.stock_request import get_stock
 from keyboards.user_keyboards.main_user_keyboards import not_entries_keyboard
 from keyboards.admin_keyboards.inline_kb_stocks import StocksInline
+from utils.logger_settings import logger
 
 router_stocks = Router()
-
-logger = logging.getLogger(__name__)
 
 
 @router_stocks.callback_query(StocksInline.filter())

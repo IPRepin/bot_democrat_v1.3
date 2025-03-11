@@ -1,5 +1,3 @@
-import logging
-
 from aiogram import Router, F
 from aiogram.types import Message
 
@@ -7,8 +5,8 @@ from filters.admin_filter import AdminsFilter, admins_filter
 from keyboards.admin_keyboards.main_admin_keyboards import get_main_admin_keyboard
 from keyboards.main_replay_keyboards import admin_stocks_keyboard
 
+
 admin_router = Router()
-logger = logging.getLogger(__name__)
 
 
 @admin_router.message(F.text == "✏️Редактировать акции",

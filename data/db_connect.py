@@ -1,5 +1,3 @@
-import logging
-
 from collections.abc import AsyncGenerator
 from datetime import datetime
 
@@ -8,9 +6,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import MetaData, Column, DateTime
 from config import settings as global_settings
-from utils.logger_settings import setup_logging
-
-logger = logging.getLogger(setup_logging())
+from utils.logger_settings import logger
 
 engine = create_async_engine(
     global_settings.POSTGRES_URL,
