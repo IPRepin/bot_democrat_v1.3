@@ -5,7 +5,7 @@ from notification.notification_handler import check_and_send_reminders
 def setup_scheduler(bot):
     scheduler = AsyncIOScheduler()
 
-    # Проверяем каждые 5 минут
+    # Проверяем каждые 60 минут
     scheduler.add_job(
         check_and_send_reminders,
         'interval',

@@ -1,5 +1,5 @@
 from aiogram import Bot
-from amo_integration.amo_commands import get_upcoming_appointments
+from amo_integration.amo_commands import get_upcoming_appointments, update_lead_notification_status
 from data.db_connect import get_session
 from data.patient_request import get_patient
 from utils.logger_settings import logger
@@ -13,18 +13,17 @@ async def check_and_send_reminders(bot: Bot) -> None:
     try:
         # Получаем предстоящие записи из AMO
         appointments = await get_upcoming_appointments()
-        logger.info("begin")
+        logger.info(f"Получили предстоящие записи из AMO")
 
         for appointment in appointments:
             message_text = (
                 f"Уважаемый(ая) {appointment['name']}!\n\n"
-                f"Напоминаем, что у Вас запись на приём "
+                f"Напоминаем, что у Вас сегодня запись на приём "
                 f"к врачу {appointment['doctor']}.\n"
                 f"Время приёма: {appointment['datetime'].strftime('%H:%M')}\n\n"
-                f"Ждём вас в нашей клинике!"
+                f"Ждём вас в клинике Democrat!"
             )
 
-            # Извлекаем телефон и форматируем его для получения chat_id
             phone = appointment['phone']
             chat_id = await get_chat_id_by_phone(phone)
 

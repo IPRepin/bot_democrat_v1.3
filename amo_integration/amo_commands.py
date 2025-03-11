@@ -24,6 +24,7 @@ class Lead(_Lead):
     rec_date = custom_field.TextCustomField("Дата записи")
     rec_time = custom_field.TextCustomField("Время записи")
     doctor = custom_field.TextCustomField("ФИО врача")
+    notification_status = custom_field.SelectCustomField("Уведомление телеграм")
 
 
 @sync_to_async()
@@ -94,15 +95,17 @@ async def get_upcoming_appointments() -> list:
             leads = await select_all_patient(session=session)
             for lead in leads:
                 phone = lead.phone
-                lead = get_lead(phone)
-
+                patient = get_lead(phone)
+                if patient is None:
+                    logger.info(f"Пациент {phone} не найден в AMO")
+                    return []
                 try:
-                    logger.info(f"Обработка записи {lead.id}, исходное время: {lead.rec_time}")
+                    logger.info(f"Обработка записи {lead.id}, исходное время: {patient.rec_time}")
 
-                    hour, minute = parse_time(lead.rec_time)
-                    logger.info(f"Распарсенное время для записи {lead.id}: {hour:02d}:{minute:02d}")
+                    hour, minute = parse_time(patient.rec_time)
+                    logger.info(f"Время для записи {lead.id}: {hour:02d}:{minute:02d}")
 
-                    appointment_date = datetime.fromtimestamp(lead.rec_date)
+                    appointment_date = datetime.fromtimestamp(patient.rec_date)
                     appointment_datetime = appointment_date.replace(
                         hour=hour,
                         minute=minute
@@ -114,28 +117,28 @@ async def get_upcoming_appointments() -> list:
                     if 2 <= hours_remaining <= 3:
                         logger.info(f"Найдена подходящая запись: {lead.id}")
                         appointment_info = {
-                            'lead_id': lead.id,
-                            'name': lead.name,
-                            'phone': lead.source_phone,
-                            'doctor': lead.doctor,
+                            'lead_id': patient.id,
+                            'name': patient.name,
+                            'phone': patient.source_phone,
+                            'doctor': patient.doctor,
                             'datetime': appointment_datetime,
                         }
                         upcoming_appointments.append(appointment_info)
                         logger.info(
-                            f"Найдена подходящая запись: ID={lead.id}, "
+                            f"Найдена подходящая запись: ID={patient.id}, "
                             f"время={appointment_datetime.strftime('%H:%M')}"
                         )
 
                 except ValueError as e:
                     logger.warning(
-                        f"Некорректное время для записи {lead.id}: {str(e)}, "
-                        f"исходное значение={lead.rec_time}"
+                        f"Некорректное время для записи {patient.id}: {str(e)}, "
+                        f"исходное значение={patient.rec_time}"
                     )
                     continue
                 except Exception as e:
                     logger.error(
-                        f"Неожиданная ошибка при обработке записи {lead.id}: {str(e)}, "
-                        f"исходное значение={lead.rec_time}"
+                        f"Неожиданная ошибка при обработке записи {patient.id}: {str(e)}, "
+                        f"исходное значение={patient.rec_time}"
                     )
                     continue
 
@@ -153,8 +156,9 @@ def update_lead_notification_status(lead_id: int) -> None:
     connect_amo()
     try:
         lead = Lead.objects.get(lead_id)
+        print(lead.notification_status)
         # Добавляем тег или обновляем кастомное поле для отметки об отправке уведомления
-        lead.tags.append("Уведомление отправлено")
+        lead.notification_status = True
         lead.save()
         logger.info("Статус уведомления обновлен для сделки %s", lead_id)
     except Exception as error:
