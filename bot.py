@@ -50,6 +50,8 @@ async def connect_telegram():
     except TelegramNetworkError as error:
         logger.error(error)
     finally:
+        await storage.close()
+        await bot.session.close()
         await bot.close()
 
 
